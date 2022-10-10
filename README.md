@@ -1,16 +1,13 @@
 # TD Games
 
+# Re-building backend with Django
+
 ## An online gaming platform that allows users to play, interact and message each other in real-time.
 
 ## Creators:
 
 - [Tony Cheng](https://github.com/TLCheng11)
 - [Derek Vogt](https://github.com/derekvogt3)
-
-## Git Repos:
-
-- [Frontend](https://github.com/derekvogt3/td-games-frontend)
-- [Backend](https://github.com/derekvogt3/td-games-backend)
 
 # Descriptions
 
@@ -22,20 +19,10 @@
 
 # System dependencies
 
-- Ruby: 2.7.4
+- Python: 3.10.7
 - Node: 16.17.1
-- SQLite
+- PostgreSQL: 14.5
 
 # Configuration:
 
-## Frontend:
-
-- Install packages: npm install
-- Start server: npm start
-- open [localhost:3021](http://localhost:4000/) on your browser
-
-## Backend (Sinatra):
-
-- Install packages: bundle install
-- Initialize Database: rake db:migrate db:seed
-- Start server: rake server
+## work in progress
