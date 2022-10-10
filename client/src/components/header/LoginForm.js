@@ -61,7 +61,7 @@ function LoginForm({ loginFormPackage }) {
       .then(() => {
         axiosInstance
           .post("users/logout/blacklist/", {
-            refresh_token: localStorage.getItem("refresh_token"),
+            refresh_token: sessionStorage.getItem("refresh_token"),
           })
           .then(() => {
             sessionStorage.removeItem("access_token");
