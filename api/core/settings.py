@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -151,7 +152,7 @@ REST_FRAMEWORK = {
 }
 
 # Use Custom User Models
-# AUTH_USER_MODEL = 'users.NewUser'
+AUTH_USER_MODEL = 'users.MyUser'
 
 # Setting for simple JWT
 SIMPLE_JWT = {
