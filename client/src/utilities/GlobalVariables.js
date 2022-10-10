@@ -1,3 +1,3 @@
-const fetchUrl = "http://localhost:9292"
+const fetchUrl = "http://localhost:8000";
 
-export { fetchUrl }
+export { fetchUrl };

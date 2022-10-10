@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchUrl } from "../../utilities/GlobalVariables";
+import { axiosInstance } from "../../utilities/axios";
 import "./LoginForm.css";
 
 function LoginForm({ loginFormPackage }) {
@@ -17,6 +18,7 @@ function LoginForm({ loginFormPackage }) {
 
   const [formInput, setFormInput] = useState({
     username: "",
+    email: "",
     password: "",
   });
 
@@ -32,73 +34,18 @@ function LoginForm({ loginFormPackage }) {
 
   // ------------------------------------------------- logic for login / logout ------------------------------------------------
 
-  function checkUserExist(name) {
-    return fetch(`${fetchUrl}/user_check/${name}`).then((res) => res.json());
-  }
-
-  function checkPassword(name, pw) {
-    return fetch(`${fetchUrl}/password_check?name=${name}&pw=${pw}`).then(
-      (res) => res.json()
-    );
-  }
-
-  // ------ use to test encryption ------
-  // var input_str = "itmakesense";
-  // console.log("Input String: "+input_str);
-  // console.log("Hash Value: " + stringToHashConversion(input_str));
-
-  // conversts to 32bit integer
-  function stringToHashConversion(string) {
-    var hashVal = 0;
-    if (string.length === 0) return hashVal;
-    for (let i = 0; i < string.length; i++) {
-      let char = string.charCodeAt(i);
-      hashVal = (hashVal << 5) - hashVal + char;
-      hashVal = hashVal & hashVal;
-    }
-    return hashVal;
-  }
-
   function onLogin(e) {
     e.preventDefault();
-    checkUserExist(formInput.username.toLowerCase()).then((result) => {
-      if (result.exist) {
-        // console.log(result)
-        // if (!result.is_login) {
-        checkPassword(
-          formInput.username.toLowerCase(),
-          stringToHashConversion(formInput.password).toString()
-        ).then((match) => {
-          if (match.matched) {
-            console.log("user logged in");
-            fetch(`${fetchUrl}/users/${result.id}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-              body: JSON.stringify({
-                is_login: true,
-              }),
-            })
-              .then((res) => res.json())
-              .then((data) => {
-                setCurrentUser(data);
-                sessionStorage.setItem("user", JSON.stringify(data));
-                setFormInput({ username: "", password: "" });
-              })
-              .catch(console.error);
-          } else {
-            showAlert({ type: "alert", message: "Wrong username or password" });
-          }
-        });
-        // } else {
-        //   alert("User already logged in!");
-        // }
-      } else {
-        showAlert({ type: "alert", message: "Wrong username or password" });
-      }
-    });
+    axiosInstance
+      .post(`token/`, formInput)
+      .then((res) => {
+        console.log(res);
+        sessionStorage.setItem("access_token", res.data.access);
+        sessionStorage.setItem("refresh_token", res.data.refresh);
+        axiosInstance.defaults.headers["Authorization"] =
+          "JWT " + sessionStorage.getItem("access_token");
+      })
+      .catch((error) => console.log(error));
   }
 
   function onLogout() {
@@ -127,82 +74,79 @@ function LoginForm({ loginFormPackage }) {
 
   // ----------------------------------------------------------- logic for sign up ---------------------------------------------------------
   function onSignUp() {
-    const name = formInput.username.toLowerCase();
+    if (formInput.username.match(/^[\w]*$/g)) {
+      if (formInput.username.match(/^[A-Za-z]/g)) {
+        if (formInput.username.match(/^.{3,18}$/g)) {
+          console.log("username ok");
 
-    checkUserExist(name).then((result) => {
-      if (result.exist) {
-        alert("username already taken");
-      } else {
-        if (name.match(/^[\w]*$/g)) {
-          if (name.match(/^[A-Za-z]/g)) {
-            if (name.match(/^.{3,18}$/g)) {
-              console.log("username ok");
-
-              //check if password meet all requirement
-              if (formInput.password.match(/^[\w\d~!@#$%^&*-=+?]+$/g)) {
-                if (formInput.password.match(/^.{6,18}$/g)) {
-                  console.log("password ok");
-                  const password = stringToHashConversion(
-                    formInput.password
-                  ).toString();
-                  // console.log(password)
-                  fetch(`${fetchUrl}/users`, {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Accept: "application/json",
-                    },
-                    body: JSON.stringify({
-                      username: name,
-                      password: password,
-                      is_login: true
-                    }),
-                  })
-                    .then((res) => res.json())
-                    .then((data) => {
-                      setCurrentUser(data);
-                      sessionStorage.setItem("user", JSON.stringify(data));
+          //check if password meet all requirement
+          if (formInput.password.match(/^[\w\d~!@#$%^&*-=+?]+$/g)) {
+            if (formInput.password.match(/^.{6,18}$/g)) {
+              console.log("password ok");
+              // console.log(password)
+              axiosInstance
+                .post("users/register/", formInput)
+                .then((res) => {
+                  console.log(res);
+                  setCurrentUser(res.data);
+                  sessionStorage.setItem("user", JSON.stringify(res.data));
+                  axiosInstance
+                    .post("token/", {
+                      email: formInput.email,
+                      password: formInput.password,
+                    })
+                    .then((res) => {
+                      sessionStorage.setItem("access_token", res.data.access);
+                      sessionStorage.setItem("refresh_token", res.data.refresh);
                       setFormInput({
                         username: "",
                         password: "",
                       });
-                      console.log(data);
                     })
-                    .catch(console.error);
-                } else {
+                    .catch(console.log);
+                })
+                .catch((error) => {
+                  console.log(error);
+                  const message =
+                    error.response.data.email[0] ||
+                    error.response.data.username[0];
                   showAlert({
                     type: "alert",
-                    message: "password need to be between 6 - 18 charaters",
+                    message: message.slice(3, -1),
                   });
-                }
-              } else {
-                showAlert({
-                  type: "alert",
-                  message:
-                    "password can only include alphabet letters, numbers and _~!@#$%^&*-=+?, cannot have space",
                 });
-              }
             } else {
               showAlert({
                 type: "alert",
-                message: "username need to be between 3 - 18 charaters",
+                message: "password need to be between 6 - 18 charaters",
               });
             }
           } else {
             showAlert({
               type: "alert",
-              message: "username must start with letter",
+              message:
+                "password can only include alphabet letters, numbers and _~!@#$%^&*-=+?, cannot have space",
             });
           }
         } else {
           showAlert({
             type: "alert",
-            message:
-              "username can only include alphabet letters, numbers and '_', cannot have space",
+            message: "username need to be between 3 - 18 charaters",
           });
         }
+      } else {
+        showAlert({
+          type: "alert",
+          message: "username must start with letter",
+        });
       }
-    });
+    } else {
+      showAlert({
+        type: "alert",
+        message:
+          "username can only include alphabet letters, numbers and '_', cannot have space",
+      });
+    }
   }
 
   // ----------------------------------------------------------------------------------------------------------------------------------
@@ -247,13 +191,11 @@ function LoginForm({ loginFormPackage }) {
             </div>
             <div id="show-chats" onClick={showChatList}>
               <p>Chats</p>
-              {
-                unreadMessages.length > 0 ? (
-                  <div id="all-unread-messages">{unreadMessages.length > 9 ? "9+" : unreadMessages.length}</div>
-                ) : (
-                  null
-                )
-              }
+              {unreadMessages.length > 0 ? (
+                <div id="all-unread-messages">
+                  {unreadMessages.length > 9 ? "9+" : unreadMessages.length}
+                </div>
+              ) : null}
             </div>
             <div id="show-chats" onClick={showSettings}>
               <p>Settings</p>
@@ -270,6 +212,18 @@ function LoginForm({ loginFormPackage }) {
               name="username"
               placeholder="Username"
               value={formInput.username}
+              onChange={controlFormInput}
+              required
+            />
+          </div>
+          <div className="input-holder">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder="email"
+              value={formInput.email}
               onChange={controlFormInput}
               required
             />

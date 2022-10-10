@@ -29,12 +29,13 @@ function App() {
   const [onAlert, setOnAlert] = useState(false);
   const [alert, setAlert] = useState({ type: "alert", message: "alert" });
   const [onWinLose, setonWinLose] = useState(false);
-  const [winLose, setwinLose] = useState({type: "win", message: "You Win!"});
+  const [winLose, setwinLose] = useState({ type: "win", message: "You Win!" });
   const [chatId, setChatId] = useState("");
   const [unreadMessages, setUnreadMessages] = useState([]);
 
   const timeOutIds = [];
 
+  // check if session saved user
   useEffect(() => {
     let sessionUser = JSON.parse(sessionStorage.getItem("user"));
     if (sessionUser) {
@@ -59,13 +60,13 @@ function App() {
   // track unread messages
   useEffect(() => {
     let intervalId;
-    if (currentUser.id) {
-      intervalId = setInterval(() => {
-        fetch(`${fetchUrl}/messages_unread/${currentUser.id}`)
-          .then((res) => res.json())
-          .then(setUnreadMessages);
-      }, 2000);
-    }
+    // if (currentUser.id) {
+    //   intervalId = setInterval(() => {
+    //     fetch(`${fetchUrl}/messages_unread/${currentUser.id}`)
+    //       .then((res) => res.json())
+    //       .then(setUnreadMessages);
+    //   }, 2000);
+    // }
 
     return () => clearInterval(intervalId);
   }, [currentUser]);
@@ -193,7 +194,7 @@ function App() {
             path="/match-making/:game_id"
             element={
               currentUser.id ? (
-                <MatchMaking matchMakingPackage={matchMakingPackage}/>
+                <MatchMaking matchMakingPackage={matchMakingPackage} />
               ) : (
                 <h1>Login to Play Game</h1>
               )
