@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from users.serializers import UserCreateSerializer, UserUpdateSerializer
+from users.serializers import UserSerializer
 from users.models import MyUser
 
 # Create your views here.
@@ -12,28 +12,28 @@ class UserCreate(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = UserCreateSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             newUser = serializer.save()
             if newUser:
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserUpdate(APIView):
+class UserLogin(APIView):
     permission_classes = [IsAuthenticated]
 
-    def find_user(self, id):
+    def find_user(self, email):
         try:
-            user = MyUser.objects.get(pk=id)
+            user = MyUser.objects.get(email=email)
         except MyUser.DoesNotExist:
             return False
         return user
 
-    def patch(self, request, id):
-        user = self.find_user(id)
+    def patch(self, request, email):
+        user = self.find_user(email)
         if not user:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = UserUpdateSerializer(user, data=request.data, partial=True)
+        serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

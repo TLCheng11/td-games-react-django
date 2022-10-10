@@ -44,13 +44,20 @@ function LoginForm({ loginFormPackage }) {
         sessionStorage.setItem("refresh_token", res.data.refresh);
         axiosInstance.defaults.headers["Authorization"] =
           "JWT " + sessionStorage.getItem("access_token");
+        axiosInstance
+          .patch(`users/login/${formInput.email}`, { is_login: true })
+          .then((res) => {
+            sessionStorage.setItem("user", JSON.stringify(res.data));
+            setCurrentUser(res.data);
+          })
+          .catch(console.error);
       })
-      .catch((error) => console.log(error));
+      .catch(console.error);
   }
 
   function onLogout() {
     axiosInstance
-      .patch(`users/update/${currentUser.id}`, { is_login: false })
+      .patch(`users/login/${currentUser.email}`, { is_login: false })
       .then(() => {
         axiosInstance
           .post("users/logout/blacklist/", {
