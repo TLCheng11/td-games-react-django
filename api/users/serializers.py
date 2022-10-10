@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from users.models import MyUser
 
-class UserSerializer(serializers.ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyUser
@@ -15,3 +15,8 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MyUser
+        fields = ("is_login",)

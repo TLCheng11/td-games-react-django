@@ -49,25 +49,28 @@ function LoginForm({ loginFormPackage }) {
   }
 
   function onLogout() {
-    fetch(`${fetchUrl}/users/${currentUser.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        is_login: false,
-      }),
-    })
+    axiosInstance
+      .patch(`users/update/${currentUser.id}`, { is_login: false })
       .then(() => {
-        setCurrentUser({});
-        setShowFriends(false);
-        setShowChats(false);
-        setShowMessages(false);
-        setShowSettings(false);
-        navigate("/");
-        console.log("user logged out");
-        sessionStorage.clear("user");
+        axiosInstance
+          .post("users/logout/blacklist/", {
+            refresh_token: localStorage.getItem("refresh_token"),
+          })
+          .then(() => {
+            sessionStorage.removeItem("access_token");
+            sessionStorage.removeItem("refresh_token");
+            sessionStorage.removeItem("user");
+            axiosInstance.defaults.headers["Authorization"] = null;
+            // console.log(res);
+            setCurrentUser({});
+            setShowFriends(false);
+            setShowChats(false);
+            setShowMessages(false);
+            setShowSettings(false);
+            navigate("/");
+            console.log("user logged out");
+          })
+          .catch(console.error);
       })
       .catch(console.error);
   }
@@ -98,6 +101,8 @@ function LoginForm({ loginFormPackage }) {
                     .then((res) => {
                       sessionStorage.setItem("access_token", res.data.access);
                       sessionStorage.setItem("refresh_token", res.data.refresh);
+                      axiosInstance.defaults.headers["Authorization"] =
+                        "JWT " + sessionStorage.getItem("access_token");
                       setFormInput({
                         username: "",
                         password: "",
