@@ -1,0 +1,17 @@
+# ignore virtual environment
+/venv
+
+# Django #
+*.log
+*.pot
+*.pyc
+!**/__pycache__
+media
+
+# database
+/data
+db.sqlite3
+
+# env secret
+.env
+.env.local
