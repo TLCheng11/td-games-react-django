@@ -11,8 +11,8 @@
 
 # Progess
 
-- ~~setup Django and Docker
-- ~~user login and authentication
+- ~~setup Django and Docker~~
+- ~~user login and authentication~~
 - setup websocket (Channel)
 - ...
 
