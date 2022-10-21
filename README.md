@@ -9,13 +9,12 @@
 - [Tony Cheng](https://github.com/TLCheng11)
 - [Derek Vogt](https://github.com/derekvogt3)
 
-# Descriptions
+# Progess
 
-- Designed simple games like Tic Tac Toe that can be played with friends online.
-- Provided users with instant messaging functions between friends and monitored their online status.
-- Tracked unread messages and shown as a badge on the navigation menu.
-- Employed SQLite database to store game histories and user data.
-- Recorded every move to let users pause and resume games anytime they wanted and play multiple games simultaneously.
+- ~~setup Django and Docker
+- ~~user login and authentication
+- setup websocket (Channel)
+- ...
 
 # System dependencies
 
