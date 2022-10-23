@@ -46,9 +46,9 @@ function App() {
   // close all lists when user changes
   useEffect(() => {
     if (currentUser.id) {
-      fetch(`${fetchUrl}/messages_unread/${currentUser.id}`)
-        .then((res) => res.json())
-        .then(setUnreadMessages);
+      // fetch(`${fetchUrl}/messages_unread/${currentUser.id}`)
+      //   .then((res) => res.json())
+      //   .then(setUnreadMessages);
 
       setShowFriends(false);
       setShowChats(false);

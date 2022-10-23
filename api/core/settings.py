@@ -49,10 +49,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     # CORS
     'corsheaders',
+    # channels
+    'channels',
+    'channels_redis',
     # local models
     'users',
     'friends',
-    'chats',
 ]
 
 MIDDLEWARE = [
@@ -200,8 +202,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-# channel setting
-ASGI_APPLICATION = "core.routing.application"
+# channels asgi setting
+ASGI_APPLICATION = "core.routings.application"
 
 # using redis for channels
 CHANNEL_LAYERS = {
