@@ -33,3 +33,10 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis:7.0.5-alpine
+    volumes:
+      - ./redis/data:/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes

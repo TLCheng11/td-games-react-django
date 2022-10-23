@@ -12,6 +12,9 @@ media
 /data
 db.sqlite3
 
+# redis
+/redis
+
 # env secret
 .env
 .env.local
