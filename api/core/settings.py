@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'corsheaders',
     # local models
     'users',
+    'friends',
+    'chats',
 ]
 
 MIDDLEWARE = [
