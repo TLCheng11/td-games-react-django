@@ -1,6 +1,3 @@
-from email.policy import default
-from random import choices
-from secrets import choice
 from django.db import models
 from users.models import MyUser as User
 
@@ -16,5 +13,8 @@ class Friend(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
+  class Meta:
+    unique_together = ("user", "friend")
+
   def __str__(self) -> str:
-        return self.user + " " + self.friend
+        return self.user.username + " " + self.friend.username
