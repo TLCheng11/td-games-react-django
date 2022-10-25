@@ -61,26 +61,16 @@ function FriendList({ friendListPackage }) {
   function addFriend(e) {
     e.preventDefault();
     if (inviteMode) {
-      fetch(`${fetchUrl}/friend_invite`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          user_id: currentUser.id,
+      axiosInstance
+        .post(`friends/`, {
           friend: formInput.toLocaleLowerCase(),
-        }),
-      })
-        .then((res) => res.json())
-        // .then(console.log)
-        .then((data) => {
-          console.log(data);
-          if (data.result.match(/^Friend invite sent/)) {
-            showAlert({ type: "winner", message: data.result });
-          } else {
-            showAlert({ type: "alert", message: data.result });
-          }
+        })
+        .then((res) => {
+          console.log(res);
+          showAlert({ type: "winner", message: "invite sent" });
+        })
+        .catch((res) => {
+          showAlert({ type: "alert", message: res.response.data.errors });
         });
       setFormInput("");
       setInviteMode(!inviteMode);
