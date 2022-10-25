@@ -4,6 +4,7 @@ from rest_framework.permissions import AllowAny
 from .models import Friend
 from .serializers import FriendSerializer
 from users.models import MyUser as User
+from users.serializers import UserSerializer
 
 # Create your views here.
 
@@ -12,8 +13,9 @@ class FriendList(viewsets.ViewSet):
   queryset = Friend.objects.all()
 
   def list(self, request):
-    # queryset = Friend.objects.filter(user=request.user.id)
-    serializer = FriendSerializer(self.queryset, many=True)
+    # to get all User object as friend in User friend list
+    friends = User.objects.filter(friend__user=request.user.id)
+    serializer = UserSerializer(friends, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
   # to create friend relation when invite

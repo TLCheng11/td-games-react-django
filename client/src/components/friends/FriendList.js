@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchUrl } from "../../utilities/GlobalVariables";
+import { axiosInstance } from "../../utilities/axios";
 import Friend from "./Friend";
 import "./FriendList.css";
 import Invites from "./Invites";
@@ -33,6 +34,11 @@ function FriendList({ friendListPackage }) {
     // return () => {
     //   clearInterval(intervalId);
     // };
+  }, []);
+
+  // to get friend list
+  useEffect(() => {
+    axiosInstance.get(`friends/`).then((res) => setUserFriends(res.data));
   }, []);
 
   // setup websocket link
