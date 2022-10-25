@@ -16,18 +16,20 @@ class FriendList(viewsets.ViewSet):
   # GET api/friends/
   def list(self, request):
     # to get all User object as friend in User friend list
-    friends = User.objects.filter(friend__user=request.user.id)
+    friends = User.objects.filter(friend__user=request.user.id, friend__status="accepted")
     serializer = UserSerializer(friends, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
   # POST api/friends/
   # to create friend relation when invite
   def create(self, request):
+    # check if invite target exist
     try:
       friend = User.objects.get(username=request.data["friend"])
     except:
       return Response({"errors": "user not found"}, status=status.HTTP_404_NOT_FOUND)
       
+    # construct data to pass into serializer
     relation = {"user": request.user.id, "friend": friend.id, "invited_by": request.user.id}
     serializer = FriendSerializer(data=relation)
     if serializer.is_valid():
