@@ -21,9 +21,11 @@ function Invites({ currentUser, friend, showAlert }) {
     // })
   }, []);
 
+  console.log(invite);
+
   useEffect(() => {
     axiosInstance
-      .get(`friends/${friend.id}`)
+      .get(`friends/${friend.id}/`)
       .then((res) => setInvite(res.data))
       .catch(console.error);
   }, []);
@@ -31,7 +33,7 @@ function Invites({ currentUser, friend, showAlert }) {
   function cancelInvite(e) {
     e.target.style.pointerEvents = "none";
     axiosInstance
-      .delete(`friends/${invite.id}`)
+      .delete(`friends/${invite.id}/`)
       .then((res) => showAlert({ type: "alert", message: res.data.message }))
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })
@@ -40,23 +42,22 @@ function Invites({ currentUser, friend, showAlert }) {
 
   function declineInvite(e) {
     e.target.style.pointerEvents = "none";
-    fetch(
-      `${fetchUrl}/delete_relations?user_id=${currentUser.id}&friend_id=${friend.id}&method=decline`,
-      {
-        method: "DELETE",
-      }
-    )
-      .then((res) => res.json())
-      .catch(console.error);
+    axiosInstance
+      .patch(`friends/${invite.id}/`, { method: "declined" })
+      .then((res) => showAlert({ type: "alert", message: res.data.message }))
+      .catch((res) =>
+        showAlert({ type: "alert", message: res.response.data.errors })
+      );
   }
 
   function acceptInvite(e) {
     e.target.style.pointerEvents = "none";
-    fetch(
-      `${fetchUrl}/accept_relations?user_id=${currentUser.id}&friend_id=${friend.id}`
-    )
-      .then((res) => res.json())
-      .catch(console.error);
+    axiosInstance
+      .patch(`friends/${invite.id}/`, { method: "accepted" })
+      .then((res) => showAlert({ type: "winner", message: res.data.message }))
+      .catch((res) =>
+        showAlert({ type: "alert", message: res.response.data.errors })
+      );
   }
 
   const Img = friend.profile_img

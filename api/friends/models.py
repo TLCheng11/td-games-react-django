@@ -4,7 +4,7 @@ from users.models import MyUser as User
 # Create your models here.
 
 class Friend(models.Model):
-  options = (("pending", "Pending"), ("accepted", "Accepted"), ("declined", "Declined"))
+  options = (("pending", "pending"), ("accepted", "accepted"), ("declined", "declined"))
 
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
   friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name="friend")

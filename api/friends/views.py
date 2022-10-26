@@ -17,12 +17,12 @@ class FriendList(viewsets.ViewSet):
   def list(self, request):
     # to get all User object as friend in User friend list
     friends = User.objects.filter(friend__user=request.user.id, friend__status="accepted")
-    pendings = User.objects.filter(friend__user=request.user.id, friend__status="pending")
+    pendings = User.objects.filter(friend__user=request.user.id).exclude(friend__status="accepted")
     serializer = UserSerializer(friends, many=True)
     serializer_pending = UserSerializer(pendings, many=True)
     return Response({"friends": serializer.data, "pendings": serializer_pending.data}, status=status.HTTP_200_OK)
 
-  # GET api/friends/:pk
+  # GET api/friends/:pk/
   def retrieve(self, request, pk):
     try:
       relation = Friend.objects.get(user=request.user.id, friend=pk)
@@ -56,9 +56,28 @@ class FriendList(viewsets.ViewSet):
       if friend.status == "pending":
         return Response({"errors": "already have pending invite"}, status=status.HTTP_403_FORBIDDEN)
       return Response({"errors": "user already in friend list"}, status=status.HTTP_403_FORBIDDEN)
+
+  # PATCH api/friends/:pk/
+  def partial_update(self, request, pk):
+    try:
+      invite = Friend.objects.get(id=pk)
+    except:
+      return Response({"errors": "invite not found"}, status=status.HTTP_404_NOT_FOUND)
+    # if invite exist, find the paired relation
+    friend = Friend.objects.get(user=invite.friend, friend=invite.user)
+    friend.status = request.data["method"]
+    friend.save()
+
+    if request.data["method"] == "accepted":
+      invite.status = request.data["method"]
+      invite.save()
+      return Response({"message": "invite accepted."}, status=status.HTTP_202_ACCEPTED)
+    else:  
+      invite.delete()
+      return Response({"message": "invite declined."}, status=status.HTTP_202_ACCEPTED)
     
 
-  # DELETE api/friends/:pk
+  # DELETE api/friends/:pk/
   def destroy(self, request, pk):
     try:
       invite = Friend.objects.get(id=pk)
@@ -69,9 +88,8 @@ class FriendList(viewsets.ViewSet):
     # if friend relation exist, delete it
     try:
       friend = Friend.objects.get(user=invite.friend, friend=invite.user)
+      friend.delete()
     except:
       pass
-    if friend:
-      friend.delete()
     invite.delete()
-    return Response({"message": "invite cancaled."})
+    return Response({"message": "invite cancaled."}, status=status.HTTP_202_ACCEPTED)
