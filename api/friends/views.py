@@ -48,7 +48,7 @@ class FriendList(viewsets.ViewSet):
 
       # if invitation is vaild, create an opposite relation
       friend = Friend.objects.get(user=relation["user"], friend=relation["friend"])
-      Friend.objects.create(user=friend.friend, friend=friend.friend, invited_by=friend.invited_by)
+      Friend.objects.create(user=friend.friend, friend=friend.user, invited_by=friend.invited_by)
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
       #if relation already exist, return error message according to status
@@ -56,3 +56,22 @@ class FriendList(viewsets.ViewSet):
       if friend.status == "pending":
         return Response({"errors": "already have pending invite"}, status=status.HTTP_403_FORBIDDEN)
       return Response({"errors": "user already in friend list"}, status=status.HTTP_403_FORBIDDEN)
+    
+
+  # DELETE api/friends/:pk
+  def destroy(self, request, pk):
+    try:
+      invite = Friend.objects.get(id=pk)
+    except:
+      return Response({"errors": "invite not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # if invite exist, find the paired relation
+    # if friend relation exist, delete it
+    try:
+      friend = Friend.objects.get(user=invite.friend, friend=invite.user)
+    except:
+      pass
+    if friend:
+      friend.delete()
+    invite.delete()
+    return Response({"message": "invite cancaled."})

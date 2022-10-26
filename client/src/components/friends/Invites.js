@@ -21,27 +21,21 @@ function Invites({ currentUser, friend, showAlert }) {
     // })
   }, []);
 
-  console.log([currentUser, invite, friend]);
-
   useEffect(() => {
     axiosInstance
       .get(`friends/${friend.id}`)
-      .then((res) => setInvite(res.data));
+      .then((res) => setInvite(res.data))
+      .catch(console.error);
   }, []);
 
   function cancelInvite(e) {
     e.target.style.pointerEvents = "none";
-    fetch(
-      `${fetchUrl}/delete_relations?user_id=${currentUser.id}&friend_id=${friend.id}&method=delete`,
-      {
-        method: "DELETE",
-      }
-    )
-      .then((res) => res.json())
-      .then(() =>
-        showAlert({ type: "alert", message: "Friend invite canceled!" })
-      )
-      .catch(console.error);
+    axiosInstance
+      .delete(`friends/${invite.id}`)
+      .then((res) => showAlert({ type: "alert", message: res.data.message }))
+      .catch((res) =>
+        showAlert({ type: "alert", message: res.response.data.errors })
+      );
   }
 
   function declineInvite(e) {
