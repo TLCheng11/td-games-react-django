@@ -38,7 +38,10 @@ function FriendList({ friendListPackage }) {
 
   // to get friend list
   useEffect(() => {
-    axiosInstance.get(`friends/`).then((res) => setUserFriends(res.data));
+    axiosInstance.get(`friends/`).then((res) => {
+      setUserFriends(res.data.friends);
+      setFriendInvites(res.data.pendings);
+    });
   }, []);
 
   // setup websocket link

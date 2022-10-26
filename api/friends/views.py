@@ -17,7 +17,18 @@ class FriendList(viewsets.ViewSet):
   def list(self, request):
     # to get all User object as friend in User friend list
     friends = User.objects.filter(friend__user=request.user.id, friend__status="accepted")
+    pendings = User.objects.filter(friend__user=request.user.id, friend__status="pending")
     serializer = UserSerializer(friends, many=True)
+    serializer_pending = UserSerializer(pendings, many=True)
+    return Response({"friends": serializer.data, "pendings": serializer_pending.data}, status=status.HTTP_200_OK)
+
+  # GET api/friends/:pk
+  def retrieve(self, request, pk):
+    try:
+      relation = Friend.objects.get(user=request.user.id, friend=pk)
+    except:
+      return Response({"errors": "user not found"}, status=status.HTTP_404_NOT_FOUND)
+    serializer = FriendSerializer(relation)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
   # POST api/friends/
