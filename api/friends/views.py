@@ -34,12 +34,23 @@ class FriendList(viewsets.ViewSet):
   # POST api/friends/
   # to create friend relation when invite
   def create(self, request):
+    # check if target is self
+    if request.user.username == request.data["friend"]:
+      return Response({"errors": "cannot invite self as friend."}, status=status.HTTP_403_FORBIDDEN)
+
     # check if invite target exist
     try:
       friend = User.objects.get(username=request.data["friend"])
     except:
       return Response({"errors": "user not found"}, status=status.HTTP_404_NOT_FOUND)
-      
+
+    # check if previous declined invite exist:
+    try:
+      preInvite = Friend.objects.get(user=friend.id, friend=request.user.id, status="declined")
+      preInvite.delete()
+    except:
+      pass
+
     # construct data to pass into serializer
     relation = {"user": request.user.id, "friend": friend.id, "invited_by": request.user.id}
     serializer = FriendSerializer(data=relation)
@@ -53,7 +64,7 @@ class FriendList(viewsets.ViewSet):
     else:
       #if relation already exist, return error message according to status
       friend = Friend.objects.get(user=relation["user"], friend=relation["friend"])
-      if friend.status == "pending":
+      if friend.status == "pending" or friend.status == "declined":
         return Response({"errors": "already have pending invite"}, status=status.HTTP_403_FORBIDDEN)
       return Response({"errors": "user already in friend list"}, status=status.HTTP_403_FORBIDDEN)
 
