@@ -1,65 +1,24 @@
 import { useEffect, useState } from "react";
-import { fetchUrl } from "../../utilities/GlobalVariables";
 import { axiosInstance } from "../../utilities/axios";
 import Friend from "./Friend";
 import "./FriendList.css";
 import Invites from "./Invites";
 
 function FriendList({ friendListPackage }) {
-  const { currentUser, setShowFriends, showAlert } = friendListPackage;
-  const [userFriends, setUserFriends] = useState([]);
-  const [friendInvites, setFriendInvites] = useState([]);
+  const { currentUser, userFriends, friendInvites, setShowFriends, showAlert } =
+    friendListPackage;
+  // const [userFriends, setUserFriends] = useState([]);
+  // const [friendInvites, setFriendInvites] = useState([]);
   const [inviteMode, setInviteMode] = useState(false);
   const [formInput, setFormInput] = useState("");
 
-  // state to hold websocket instance
-  const [socket, setSocket] = useState({});
-
-  useEffect(() => {
-    // fetch(`${fetchUrl}/friends/${currentUser.id}`)
-    //   .then((res) => res.json())
-    //   .then(setUserFriends);
-    // fetch(`${fetchUrl}/friends_pending/${currentUser.id}`)
-    //   .then((res) => res.json())
-    //   .then(setFriendInvites);
-    // keep checking friends online status
-    // const intervalId = setInterval(() => {
-    //   fetch(`${fetchUrl}/friends/${currentUser.id}`)
-    //   .then(res => res.json())
-    //   .then(setUserFriends)
-    //   fetch(`${fetchUrl}/friends_pending/${currentUser.id}`)
-    //   .then(res => res.json())
-    //   .then(setFriendInvites)
-    // }, 2000)
-    // return () => {
-    //   clearInterval(intervalId);
-    // };
-  }, []);
-
   // to get friend list
-  useEffect(() => {
-    axiosInstance.get(`friends/`).then((res) => {
-      setUserFriends(res.data.friends);
-      setFriendInvites(res.data.pendings);
-    });
-  }, []);
-
-  // setup websocket link
-  useEffect(() => {
-    const chatSocket = new WebSocket(
-      "ws://localhost:8000/ws/friends/" + currentUser.username + "/"
-    );
-    setSocket(chatSocket);
-
-    return () => chatSocket.close();
-  }, []);
-
-  // when receving update from websocket
-  socket.onmessage = function (e) {
-    const res = JSON.parse(e.data);
-    console.log(res.message);
-    console.log(e.data);
-  };
+  // useEffect(() => {
+  //   axiosInstance.get(`friends/`).then((res) => {
+  //     setUserFriends(res.data.friends);
+  //     setFriendInvites(res.data.pendings);
+  //   });
+  // }, [refresh]);
 
   function addFriend(e) {
     e.preventDefault();

@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-class FriendListConsumer(AsyncWebsocketConsumer):
+class FriendConsumer(AsyncWebsocketConsumer):
   # start connection
   async def connect(self):
     self.room_name = self.scope['url_route']['kwargs']['room_name']
@@ -19,18 +19,15 @@ class FriendListConsumer(AsyncWebsocketConsumer):
     await self.channel_layer.group_send(
       self.room_group_name,
       {
-        'type': 'message',
-        'message': 'hello'
+        'type': 'joined'
       }
     )
 
   # sending back message
   # the function name here link to the 'type' in the .group_send method
-  async def message(self, event):
-    message = event['message']
-
+  async def joined(self, event):
     await self.send(text_data=json.dumps({
-      'message': message,
+      'message': self.room_group_name + " connected",
     }))
 
   # receive data

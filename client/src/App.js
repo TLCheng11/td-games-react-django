@@ -2,6 +2,7 @@ import ReactDOM from "react-dom/client";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { fetchUrl } from "./utilities/GlobalVariables";
+import { axiosInstance } from "./utilities/axios";
 
 import "./App.css";
 import Header from "./components/header/Header";
@@ -35,7 +36,14 @@ function App() {
 
   const timeOutIds = [];
 
-  // state to hold websocket instance
+  // for friend list
+  const [userFriends, setUserFriends] = useState([]);
+  const [friendInvites, setFriendInvites] = useState([]);
+  // use to refetch friend list info
+  const [refresh, setRefresh] = useState(true);
+
+  // ---------- User Websocket ----------
+  // state to hold user websocket instance
   const [userSocket, setUserSocket] = useState({});
 
   // create a websocket when user login
@@ -50,6 +58,49 @@ function App() {
       return () => socket.close();
     }
   }, [currentUser]);
+  // -------------------------------------
+
+  // ---------- Friendlist Websockets ----------
+  const [friendSockets, setFriendSockets] = useState([]);
+
+  // to get friend list
+  useEffect(() => {
+    if (currentUser.id) {
+      axiosInstance.get(`friends/`).then((res) => {
+        setUserFriends(res.data.friends);
+        setFriendInvites(res.data.pendings);
+      });
+    } else {
+      setUserFriends([]);
+      setFriendInvites([]);
+    }
+  }, [currentUser, refresh]);
+
+  // to create all friend websockets
+  useEffect(() => {
+    if (currentUser.id && userFriends.length > 0) {
+      userFriends.forEach((friend) => {
+        const first =
+          currentUser.id < friend.id ? currentUser.username : friend.username;
+        const second =
+          currentUser.id > friend.id ? currentUser.username : friend.username;
+        const chatSocket = new WebSocket(
+          "ws://localhost:8000/ws/friends/" + first + "_" + second + "/"
+        );
+        setFriendSockets((sockets) => [...sockets, chatSocket]);
+      });
+    } else {
+      friendSockets.forEach((socket) => socket.close());
+      setFriendSockets([]);
+    }
+
+    return () => {
+      friendSockets.forEach((socket) => socket.close());
+      setFriendSockets([]);
+    };
+  }, [userFriends]);
+
+  console.log(friendSockets);
 
   // check if session saved user
   useEffect(() => {
@@ -138,6 +189,8 @@ function App() {
   const friendListPackage = {
     currentUser,
     unreadMessages,
+    userFriends,
+    friendInvites,
     setChatId,
     setShowFriends,
     setShowChats,
