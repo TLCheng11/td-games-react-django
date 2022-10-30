@@ -42,7 +42,7 @@ function App() {
   // use to refetch friend list info
   const [refresh, setRefresh] = useState(true);
 
-  // ---------- User Websocket ----------
+  // ---------------------------------------- User Websocket ----------------------------------------
   // state to hold user websocket instance
   const [userSocket, setUserSocket] = useState({});
 
@@ -55,12 +55,23 @@ function App() {
       );
       setUserSocket(socket);
 
-      return () => socket.close();
+      const friendSocket = new WebSocket(
+        "ws://localhost:8000/ws/friends/" +
+          currentUser.username +
+          "/" +
+          currentUser.username +
+          "/"
+      );
+
+      return () => {
+        socket.close();
+        friendSocket.close();
+      };
     }
   }, [currentUser]);
-  // -------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------------
 
-  // ---------- Friendlist Websockets ----------
+  // ---------------------------------------- Friendlist Websockets ----------------------------------------
   const [friendSockets, setFriendSockets] = useState([]);
 
   // to get friend list
@@ -80,14 +91,18 @@ function App() {
   useEffect(() => {
     if (currentUser.id && userFriends.length > 0) {
       userFriends.forEach((friend) => {
-        const first =
-          currentUser.id < friend.id ? currentUser.username : friend.username;
-        const second =
-          currentUser.id > friend.id ? currentUser.username : friend.username;
-        const chatSocket = new WebSocket(
-          "ws://localhost:8000/ws/friends/" + first + "_" + second + "/"
+        // const first =
+        //   currentUser.id < friend.id ? currentUser.username : friend.username;
+        // const second =
+        //   currentUser.id > friend.id ? currentUser.username : friend.username;
+        const friendSocket = new WebSocket(
+          "ws://localhost:8000/ws/friends/" +
+            friend.username +
+            "/" +
+            currentUser.username +
+            "/"
         );
-        setFriendSockets((sockets) => [...sockets, chatSocket]);
+        setFriendSockets((sockets) => [...sockets, friendSocket]);
       });
     } else {
       friendSockets.forEach((socket) => socket.close());
@@ -100,7 +115,19 @@ function App() {
     };
   }, [userFriends]);
 
-  console.log(friendSockets);
+  // when a friend login
+  friendSockets.forEach((socket) => {
+    socket.onmessage = function (e) {
+      const res = JSON.parse(e.data);
+      console.log(e.data);
+      const updateStatus = userFriends.map((friend) => {
+        if (friend.username === res.username) friend.is_login = res.is_login;
+        return friend;
+      });
+      setUserFriends(updateStatus);
+    };
+  });
+  // ------------------------------------------------------------------------------------------------------------------------
 
   // check if session saved user
   useEffect(() => {

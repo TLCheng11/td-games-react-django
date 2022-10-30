@@ -5,6 +5,7 @@ class FriendConsumer(AsyncWebsocketConsumer):
   # start connection
   async def connect(self):
     self.room_name = self.scope['url_route']['kwargs']['room_name']
+    self.current_user = self.scope['url_route']['kwargs']['current_user']
     self.room_group_name = 'friend_%s' % self.room_name
 
     await self.channel_layer.group_add(
@@ -16,35 +17,38 @@ class FriendConsumer(AsyncWebsocketConsumer):
     await self.accept()
 
     # use group send to send out messages
-    await self.channel_layer.group_send(
-      self.room_group_name,
-      {
-        'type': 'joined'
-      }
-    )
+    if self.room_name == self.current_user:
+      await self.channel_layer.group_send(
+        self.room_group_name,
+        {
+          'type': 'joined'
+        }
+      )
 
   # sending back message
   # the function name here link to the 'type' in the .group_send method
   async def joined(self, event):
     await self.send(text_data=json.dumps({
-      'message': self.room_group_name + " connected",
+      'username': self.room_name,
+      'is_login': True
     }))
 
-  # receive data
-  async def receive(self, text_data=None):
-    text_data_json = json.loads(text_data)
-    message = text_data_json['message']
-
-    await self.channel_layer.group_send(
-      self.room_group_name,
-      {
-        'type': 'message',
-        'message': message
-      }
-    )
+  async def leaved(self, event):
+    await self.send(text_data=json.dumps({
+      'username': self.room_name,
+      'is_login': False
+    }))
 
   # disconnect from channel
   async def disconnect(self, code):
+    if self.room_name == self.current_user:
+      await self.channel_layer.group_send(
+        self.room_group_name,
+        {
+          'type': 'leaved'
+        }
+      )
+
     await self.channel_layer.group_discard(
       self.room_group_name,
       self.channel_name
