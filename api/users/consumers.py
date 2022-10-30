@@ -17,22 +17,6 @@ class UserConsumer(AsyncWebsocketConsumer):
     # need to accept the connection
     await self.accept()
 
-    # use group send to send out messages
-    await self.channel_layer.group_send(
-      self.room_group_name,
-      {
-        'type': 'message'
-      }
-    )
-
-  # sending back message
-  # the function name here link to the 'type' in the .group_send method
-  async def message(self, event):
-
-    await self.send(text_data=json.dumps({
-      'message': self.room_name + " " + self.channel_name + " " + self.room_group_name,
-    }))
-
   # disconnect from channel
   async def disconnect(self, code):
     await self.channel_layer.group_discard(

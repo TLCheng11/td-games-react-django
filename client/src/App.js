@@ -51,13 +51,6 @@ function App() {
     }
   }, [currentUser]);
 
-  // when receving update from websocket
-  userSocket.onmessage = function (e) {
-    const res = JSON.parse(e.data);
-    console.log(res.message);
-    console.log(e.data);
-  };
-
   // check if session saved user
   useEffect(() => {
     let sessionUser = JSON.parse(sessionStorage.getItem("user"));
