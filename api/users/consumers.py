@@ -1,0 +1,46 @@
+import json
+from asgiref.sync import sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
+from .models import MyUser as User
+
+class UserConsumer(AsyncWebsocketConsumer):
+  # start connection
+  async def connect(self):
+    self.room_name = self.scope['url_route']['kwargs']['room_name']
+    self.room_group_name = 'user_%s' % self.room_name
+
+    await self.channel_layer.group_add(
+      self.room_group_name,
+      self.channel_name
+    )
+
+    # need to accept the connection
+    await self.accept()
+
+    # use group send to send out messages
+    await self.channel_layer.group_send(
+      self.room_group_name,
+      {
+        'type': 'message'
+      }
+    )
+
+  # sending back message
+  # the function name here link to the 'type' in the .group_send method
+  async def message(self, event):
+
+    await self.send(text_data=json.dumps({
+      'message': self.room_name + " " + self.channel_name + " " + self.room_group_name,
+    }))
+
+  # disconnect from channel
+  async def disconnect(self, code):
+    await self.channel_layer.group_discard(
+      self.room_group_name,
+      self.channel_name
+    )
+    await self.logout_user()
+    
+  @sync_to_async
+  def logout_user(self):
+    User.objects.filter(username=self.room_name).update(is_login=False)

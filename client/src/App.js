@@ -35,6 +35,29 @@ function App() {
 
   const timeOutIds = [];
 
+  // state to hold websocket instance
+  const [userSocket, setUserSocket] = useState({});
+
+  // create a websocket when user login
+  // update user status to logout when websocket disconnect
+  useEffect(() => {
+    if (currentUser.id) {
+      const socket = new WebSocket(
+        "ws://localhost:8000/ws/users/" + currentUser.username + "/"
+      );
+      setUserSocket(socket);
+
+      return () => socket.close();
+    }
+  }, [currentUser]);
+
+  // when receving update from websocket
+  userSocket.onmessage = function (e) {
+    const res = JSON.parse(e.data);
+    console.log(res.message);
+    console.log(e.data);
+  };
+
   // check if session saved user
   useEffect(() => {
     let sessionUser = JSON.parse(sessionStorage.getItem("user"));
