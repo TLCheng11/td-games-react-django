@@ -17,7 +17,7 @@ class FriendList(viewsets.ViewSet):
   def list(self, request):
     # to get all User object as friend in User friend list
     friends = User.objects.filter(friend__user=request.user.id, friend__status="accepted")
-    pendings = User.objects.filter(friend__user=request.user.id).exclude(friend__status="accepted")
+    pendings = User.objects.filter(friend__user=request.user.id, friend__status__in=["pending", "declined"])
     serializer = UserSerializer(friends, many=True)
     serializer_pending = UserSerializer(pendings, many=True)
     return Response({"friends": serializer.data, "pendings": serializer_pending.data}, status=status.HTTP_200_OK)
