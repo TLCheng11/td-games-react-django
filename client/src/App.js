@@ -45,6 +45,7 @@ function App() {
   // ---------------------------------------- User Websocket ----------------------------------------
   // state to hold user websocket instance
   const [userSocket, setUserSocket] = useState({});
+  const [inviteSocket, setInviteSocket] = useState({});
 
   // create a websocket when user login
   // update user status to logout when websocket disconnect
@@ -55,6 +56,7 @@ function App() {
       );
       setUserSocket(socket);
 
+      // to update login status
       const friendSocket = new WebSocket(
         "ws://localhost:8000/ws/friends/" +
           currentUser.username +
@@ -63,9 +65,16 @@ function App() {
           "/"
       );
 
+      // to join invite channel
+      const inviteSocket = new WebSocket(
+        "ws://localhost:8000/ws/invites/invite/" + currentUser.username + "/"
+      );
+      setInviteSocket(inviteSocket);
+
       return () => {
         socket.close();
         friendSocket.close();
+        inviteSocket.close();
       };
     }
   }, [currentUser]);
@@ -91,10 +100,6 @@ function App() {
   useEffect(() => {
     if (currentUser.id && userFriends.length > 0) {
       userFriends.forEach((friend) => {
-        // const first =
-        //   currentUser.id < friend.id ? currentUser.username : friend.username;
-        // const second =
-        //   currentUser.id > friend.id ? currentUser.username : friend.username;
         const friendSocket = new WebSocket(
           "ws://localhost:8000/ws/friends/" +
             friend.username +
@@ -119,7 +124,6 @@ function App() {
   friendSockets.forEach((socket) => {
     socket.onmessage = function (e) {
       const res = JSON.parse(e.data);
-      console.log(e.data);
       const updateStatus = userFriends.map((friend) => {
         if (friend.username === res.username) friend.is_login = res.is_login;
         return friend;
@@ -190,6 +194,14 @@ function App() {
     timeOutIds.forEach((id) => clearInterval(id));
   }
 
+  // update friendlist when receive invite signal
+  inviteSocket.onmessage = function (e) {
+    const res = JSON.parse(e.data);
+    if (res.update) {
+      setRefresh((state) => !state);
+    }
+  };
+
   // to show alert box
   function showAlert(message) {
     setAlert(message);
@@ -218,6 +230,9 @@ function App() {
     unreadMessages,
     userFriends,
     friendInvites,
+    inviteSocket,
+    refresh,
+    setRefresh,
     setChatId,
     setShowFriends,
     setShowChats,

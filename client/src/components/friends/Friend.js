@@ -13,39 +13,6 @@ function Friend({ friend, setRefresh, friendListPackage }) {
   } = friendListPackage;
   const [chat, setChat] = useState({});
 
-  // state to hold websocket instance
-  // const [socket, setSocket] = useState({});
-
-  // setup websocket link
-  // useEffect(() => {
-  //   const first =
-  //     currentUser.id < friend.id ? currentUser.username : friend.username;
-  //   const second =
-  //     currentUser.id > friend.id ? currentUser.username : friend.username;
-  //   const chatSocket = new WebSocket(
-  //     "ws://localhost:8000/ws/friends/" + first + "_" + second + "/"
-  //   );
-  //   setSocket(chatSocket);
-
-  //   return () => chatSocket.close();
-  // }, []);
-
-  // when receving update from websocket
-  // socket.onmessage = function (e) {
-  //   const res = JSON.parse(e.data);
-  //   console.log(res.message);
-  //   console.log(e.data);
-  //   if (res.message === "update") setRefresh((state) => !state);
-  // };
-
-  useEffect(() => {
-    // fetch(
-    //   `${fetchUrl}/find_chats?user_id=${currentUser.id}&friend_id=${friend.id}`
-    // )
-    //   .then((res) => res.json())
-    //   .then(setChat);
-  }, []);
-
   const Img = friend.profile_img
     ? friend.profile_img
     : "https://wellbeingchirony.com/wp-content/uploads/2021/03/Deafult-Profile-Pitcher.png";

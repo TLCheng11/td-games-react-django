@@ -5,20 +5,24 @@ import "./FriendList.css";
 import Invites from "./Invites";
 
 function FriendList({ friendListPackage }) {
-  const { currentUser, userFriends, friendInvites, setShowFriends, showAlert } =
-    friendListPackage;
-  // const [userFriends, setUserFriends] = useState([]);
-  // const [friendInvites, setFriendInvites] = useState([]);
+  const {
+    currentUser,
+    userFriends,
+    friendInvites,
+    refresh,
+    setRefresh,
+    inviteSocket,
+    setShowFriends,
+    showAlert,
+  } = friendListPackage;
+
   const [inviteMode, setInviteMode] = useState(false);
   const [formInput, setFormInput] = useState("");
 
-  // to get friend list
-  // useEffect(() => {
-  //   axiosInstance.get(`friends/`).then((res) => {
-  //     setUserFriends(res.data.friends);
-  //     setFriendInvites(res.data.pendings);
-  //   });
-  // }, [refresh]);
+  // to update friend list
+  useEffect(() => {
+    setRefresh((state) => !state);
+  }, []);
 
   function addFriend(e) {
     e.preventDefault();
@@ -31,10 +35,16 @@ function FriendList({ friendListPackage }) {
           console.log(res);
           showAlert({ type: "winner", message: "invite sent" });
         })
+        .then(() => {
+          setRefresh((state) => !state);
+          inviteSocket.send(
+            JSON.stringify({ payload: formInput.toLocaleLowerCase() })
+          );
+          setFormInput("");
+        })
         .catch((res) => {
           showAlert({ type: "alert", message: res.response.data.errors });
         });
-      setFormInput("");
       setInviteMode(!inviteMode);
     } else {
       setInviteMode(!inviteMode);
@@ -54,10 +64,12 @@ function FriendList({ friendListPackage }) {
       key={friend.id}
       currentUser={currentUser}
       friend={friend}
+      refresh={refresh}
+      setRefresh={setRefresh}
+      inviteSocket={inviteSocket}
       showAlert={showAlert}
     />
   ));
-  // console.log(showFriends)
 
   return (
     <div id="friend-list">

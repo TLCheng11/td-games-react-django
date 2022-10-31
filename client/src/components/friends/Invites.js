@@ -3,38 +3,33 @@ import { fetchUrl } from "../../utilities/GlobalVariables";
 import { axiosInstance } from "../../utilities/axios";
 import "./Invites.css";
 
-function Invites({ currentUser, friend, showAlert }) {
+function Invites({
+  currentUser,
+  friend,
+  refresh,
+  setRefresh,
+  inviteSocket,
+  showAlert,
+}) {
   const [invite, setInvite] = useState({});
 
-  useEffect(() => {
-    // fetch(`${fetchUrl}/friends_relation?user_id=${currentUser.id}&friend_id=${friend.id}`)
-    // .then(res => res.json())
-    // .then(data => setInvite(data))
-    // // keep checking friends online status
-    // const intervalId = setInterval(() => {
-    //   fetch(`${fetchUrl}/friends_relation?user_id=${currentUser.id}&friend_id=${friend.id}`)
-    //   .then(res => res.json())
-    //   .then(data => setInvite(data))
-    // }, 2000)
-    // return (() => {
-    //   clearInterval(intervalId)
-    // })
-  }, []);
-
-  console.log(invite);
-
+  // the get invition status
   useEffect(() => {
     axiosInstance
       .get(`friends/${friend.id}/`)
       .then((res) => setInvite(res.data))
       .catch(console.error);
-  }, []);
+  }, [refresh]);
 
   function cancelInvite(e) {
     e.target.style.pointerEvents = "none";
     axiosInstance
       .delete(`friends/${invite.id}/`)
       .then((res) => showAlert({ type: "alert", message: res.data.message }))
+      .then(() => {
+        setRefresh((state) => !state);
+        inviteSocket.send(JSON.stringify({ payload: friend.username }));
+      })
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })
       );
@@ -45,6 +40,10 @@ function Invites({ currentUser, friend, showAlert }) {
     axiosInstance
       .patch(`friends/${invite.id}/`, { method: "declined" })
       .then((res) => showAlert({ type: "alert", message: res.data.message }))
+      .then(() => {
+        setRefresh((state) => !state);
+        inviteSocket.send(JSON.stringify({ payload: friend.username }));
+      })
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })
       );
@@ -55,6 +54,10 @@ function Invites({ currentUser, friend, showAlert }) {
     axiosInstance
       .patch(`friends/${invite.id}/`, { method: "accepted" })
       .then((res) => showAlert({ type: "winner", message: res.data.message }))
+      .then(() => {
+        setRefresh((state) => !state);
+        inviteSocket.send(JSON.stringify({ payload: friend.username }));
+      })
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })
       );
