@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     # local models
     'users',
     'friends',
+    'chats',
 ]
 
 MIDDLEWARE = [
