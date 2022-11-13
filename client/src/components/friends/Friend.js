@@ -22,13 +22,12 @@ function Friend({ friend, setRefresh, friendListPackage }) {
     : { backgroundColor: "red" };
 
   function findMessages() {
-    axiosInstance
-      .post(`chats/`, { friend: friend.id })
-      .then((res) => console.log(res));
-    // setChatId(chat.id);
-    // setShowFriends(false);
-    // setShowChats(false);
-    // setShowMessages(true);
+    axiosInstance.post(`chats/`, { friend: friend.id }).then((res) => {
+      setChatId(res.data.id);
+      setShowFriends(false);
+      setShowChats(false);
+      setShowMessages(true);
+    });
   }
 
   const showUnreadMessages = chat.id

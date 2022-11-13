@@ -1,15 +1,15 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from .models import Chat, UserChat
-from .serializers import ChatSerializer
+from rest_framework.permissions import IsAuthenticated
+from .models import Chat, Message
+from .serializers import ChatSerializer, MessageSerializer
 from users.models import MyUser as User
-from users.serializers import UserSerializer
 
 # Create your views here.
 # trying the view with sepreate functions
 
+# Chat Controllers
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
 def chat_list(request):
@@ -54,3 +54,23 @@ def chat_detail(request, id):
     chat = Chat.objects.get(pk=id)
     serializer = ChatSerializer(chat)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+# Messages Controllers
+@api_view(["GET", "POST"])
+def message_list(request, chat_id):
+  
+  # GET chats/messages/chat_id/
+  # get all message related to chat_id
+  if request.method == "GET":
+    chat = Chat.objects.get(pk=chat_id)
+    messages = chat.messages.all()
+    serializer = MessageSerializer(messages, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+  # POSt chats/messages/chat_id/
+  # create message object for chat_id
+  if request.method == "POST":
+    chat = Chat.objects.get(pk=chat_id)
+    message = Message.objects.create(user=request.user, chat=chat, message=request.data["message"])
+    serializer = MessageSerializer(message)
+    return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
