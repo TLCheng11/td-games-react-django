@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { axiosInstance } from "../../utilities/axios";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./Friend.css";
 
@@ -21,10 +22,13 @@ function Friend({ friend, setRefresh, friendListPackage }) {
     : { backgroundColor: "red" };
 
   function findMessages() {
-    setChatId(chat.id);
-    setShowFriends(false);
-    setShowChats(false);
-    setShowMessages(true);
+    axiosInstance
+      .post(`chats/`, { friend: friend.id })
+      .then((res) => console.log(res));
+    // setChatId(chat.id);
+    // setShowFriends(false);
+    // setShowChats(false);
+    // setShowMessages(true);
   }
 
   const showUnreadMessages = chat.id
