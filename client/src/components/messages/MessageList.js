@@ -11,33 +11,29 @@ function MessageList({ messageListPackage }) {
   const [messages, setMessages] = useState([]);
   const [usersStatus, setUsersStatus] = useState({});
   const [refresh, setRefresh] = useState(false);
+  const [chatWebSocket, setChatWebSocket] = useState({});
 
   useEffect(() => {
     axiosInstance
       .get(`chats/messages/${chatId}`)
       .then((res) => setMessages(res.data));
-
-    // keep checking new message from the server
-    // const intervalId = setInterval(() => {
-    //   fetch(`${fetchUrl}/messages?chat_id=${chatId}`)
-    //   .then(res => res.json())
-    //   .then(setMessages)
-
-    //   fetch(`${fetchUrl}/chat_members/${chatId}`)
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     const status = {}
-    //     data.forEach(member => status[member.username] = member.is_login)
-    //     setUsersStatus(status)
-    //   })
-    //   // console.log("run interval")
-    // }, 1000)
-
-    // return (() => {
-    //   clearInterval(intervalId)
-    //   // console.log("stop interval")
-    // })
   }, [refresh]);
+
+  // TODO add message websocket
+  useEffect(() => {
+    const socket = new WebSocket(
+      "ws://localhost:8000/ws/chats/" +
+        chatId +
+        "/" +
+        currentUser.username +
+        "/"
+    );
+    setChatWebSocket(socket);
+
+    return () => {
+      socket.close();
+    };
+  }, []);
 
   const showMessages = messages.map((message) => {
     return (
@@ -66,6 +62,10 @@ function MessageList({ messageListPackage }) {
 
   function sendMessage(e) {
     e.preventDefault();
+    // chatWebSocket.send(
+    //   JSON.stringify({ sender: currentUser.username, message: formInput })
+    // );
+
     axiosInstance
       .post(`chats/messages/${chatId}`, {
         user: currentUser.id,
@@ -74,10 +74,21 @@ function MessageList({ messageListPackage }) {
       })
       .then((res) => {
         // TODO set to channel
-        setMessages([...messages, res.data]);
+        // setMessages([...messages, res.data]);
         setFormInput("");
       });
   }
+
+  // when receive update from chatWebSocket
+  chatWebSocket.onmessage = function (e) {
+    const res = JSON.parse(e.data);
+    if (res.method === "POST") {
+      setMessages([...messages, res.data]);
+    } else if (res.method === "DELETE") {
+      const newMessages = messages.filter((m) => m.id != res.data.id);
+      setMessages(newMessages);
+    }
+  };
 
   return (
     <div id="message-window">

@@ -2,6 +2,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
 from .models import Chat, Message
 from .serializers import ChatSerializer, MessageSerializer
 from users.models import MyUser as User
@@ -75,6 +79,19 @@ def message_list(request, chat_id):
     chat = Chat.objects.get(pk=chat_id)
     message = Message.objects.create(user=request.user, chat=chat, message=request.data["message"])
     serializer = MessageSerializer(message)
+
+    # send out the message through chat channel
+    channel_layer = get_channel_layer()
+    room_group_name = 'chat_%s' % chat_id
+    async_to_sync(channel_layer.group_send)(
+      room_group_name, 
+      {
+        'type': 'send_message',
+        'method': request.method,
+        'data': serializer.data,
+      }
+    )
+
     return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 @api_view(["PATCH", "DELETE"])
