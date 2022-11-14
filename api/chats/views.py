@@ -48,6 +48,7 @@ def chat_list(request):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def chat_detail(request, id):
   
   if request.method == "GET":
@@ -57,6 +58,7 @@ def chat_detail(request, id):
 
 # Messages Controllers
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def message_list(request, chat_id):
   
   # GET chats/messages/chat_id/
@@ -74,3 +76,21 @@ def message_list(request, chat_id):
     message = Message.objects.create(user=request.user, chat=chat, message=request.data["message"])
     serializer = MessageSerializer(message)
     return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def message_detail(request, id):
+  try: 
+    message = Message.objects.get(pk=id)
+  except:
+    return Response({"errors": "message not found"}, status=status.HTTP_404_NOT_FOUND)
+
+  if request.user != message.user:
+    return Response({"errors": "only sender can edit message"}, status=status.HTTP_403_FORBIDDEN)
+
+  # UPDATE chats/message_edit/id/
+  if request.method == "PATCH":
+    serializer = MessageSerializer(message, data=request.data, partial=True)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

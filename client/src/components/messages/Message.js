@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { axiosInstance } from "../../utilities/axios";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./Message.css";
 
-function MyMessage({ currentUser, message }) {
+function MyMessage({ currentUser, message, setRefresh }) {
   const { user: sender } = message;
   const [style, setStyle] = useState({ flexDirection: "row" });
   const [editMode, setEditMode] = useState(false);
@@ -40,18 +41,12 @@ function MyMessage({ currentUser, message }) {
 
   function editMessage(e) {
     e.preventDefault();
-    fetch(`${fetchUrl}/messages/${message.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        message: editFromInput,
-      }),
-    })
-      .then((res) => res.json())
-      .then(() => setEditMode(false))
+    axiosInstance
+      .patch(`chats/message_edit/${message.id}`, { message: editFromInput })
+      .then((res) => {
+        setEditMode(false);
+        setRefresh((state) => !state);
+      })
       .catch(console.error);
   }
 
@@ -84,7 +79,8 @@ function MyMessage({ currentUser, message }) {
                   {message.created_at.slice(0, 10)}{" "}
                   {message.created_at.slice(11, 19)}
                 </p>
-                {message.created_at != message.updated_at ? (
+                {message.created_at.slice(0, 19) !=
+                message.updated_at.slice(0, 19) ? (
                   <p className="message-edited-tag">Edited</p>
                 ) : null}
               </div>

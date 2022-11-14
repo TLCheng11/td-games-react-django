@@ -9,6 +9,7 @@ function MessageList({ messageListPackage }) {
   const [formInput, setFormInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [usersStatus, setUsersStatus] = useState({});
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     axiosInstance
@@ -35,11 +36,16 @@ function MessageList({ messageListPackage }) {
     //   clearInterval(intervalId)
     //   // console.log("stop interval")
     // })
-  }, []);
+  }, [refresh]);
 
   const showMessages = messages.map((message) => {
     return (
-      <Message key={message.id} currentUser={currentUser} message={message} />
+      <Message
+        key={message.id}
+        currentUser={currentUser}
+        message={message}
+        setRefresh={setRefresh}
+      />
     );
   });
 
