@@ -38,6 +38,7 @@ function App() {
 
   // for friend list
   const [userFriends, setUserFriends] = useState([]);
+  const [userFriendOnlineStatus, setUserFriendOnlineStatus] = useState({});
   const [friendInvites, setFriendInvites] = useState([]);
   // use to refetch friend list info
   const [refresh, setRefresh] = useState(true);
@@ -89,9 +90,15 @@ function App() {
       axiosInstance.get(`friends/`).then((res) => {
         setUserFriends(res.data.friends);
         setFriendInvites(res.data.pendings);
+        const onlineStatus = {};
+        res.data.friends.forEach(
+          (friend) => (onlineStatus[friend.username] = friend.is_login)
+        );
+        setUserFriendOnlineStatus(onlineStatus);
       });
     } else {
       setUserFriends([]);
+      setUserFriendOnlineStatus({});
       setFriendInvites([]);
     }
   }, [currentUser, refresh]);
@@ -123,12 +130,11 @@ function App() {
   // when a friend login
   friendSockets.forEach((socket) => {
     socket.onmessage = function (e) {
-      const res = JSON.parse(e.data);
-      const updateStatus = userFriends.map((friend) => {
-        if (friend.username === res.username) friend.is_login = res.is_login;
-        return friend;
+      const { username, is_login } = JSON.parse(e.data);
+      setUserFriendOnlineStatus({
+        ...userFriendOnlineStatus,
+        [username]: is_login,
       });
-      setUserFriends(updateStatus);
     };
   });
   // ------------------------------------------------------------------------------------------------------------------------
@@ -229,6 +235,7 @@ function App() {
     currentUser,
     unreadMessages,
     userFriends,
+    userFriendOnlineStatus,
     friendInvites,
     inviteSocket,
     refresh,
@@ -253,6 +260,7 @@ function App() {
   const messageListPackage = {
     currentUser,
     chatId,
+    userFriendOnlineStatus,
     setShowMessages,
     showAlert,
   };

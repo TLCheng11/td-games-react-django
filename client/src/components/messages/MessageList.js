@@ -5,7 +5,8 @@ import Message from "./Message";
 import { axiosInstance } from "../../utilities/axios";
 
 function MessageList({ messageListPackage }) {
-  const { currentUser, chatId, setShowMessages } = messageListPackage;
+  const { currentUser, chatId, setShowMessages, userFriendOnlineStatus } =
+    messageListPackage;
   const [formInput, setFormInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [usersStatus, setUsersStatus] = useState({});
@@ -44,6 +45,7 @@ function MessageList({ messageListPackage }) {
         key={message.id}
         currentUser={currentUser}
         message={message}
+        userFriendOnlineStatus={userFriendOnlineStatus}
         setRefresh={setRefresh}
       />
     );

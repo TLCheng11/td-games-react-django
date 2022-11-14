@@ -6,6 +6,7 @@ import "./Friend.css";
 function Friend({ friend, setRefresh, friendListPackage }) {
   const {
     currentUser,
+    userFriendOnlineStatus,
     unreadMessages,
     setChatId,
     setShowFriends,
@@ -17,7 +18,7 @@ function Friend({ friend, setRefresh, friendListPackage }) {
   const Img = friend.profile_img
     ? friend.profile_img
     : "https://wellbeingchirony.com/wp-content/uploads/2021/03/Deafult-Profile-Pitcher.png";
-  const online = friend.is_login
+  const online = userFriendOnlineStatus[friend.username]
     ? { backgroundColor: "green" }
     : { backgroundColor: "red" };
 

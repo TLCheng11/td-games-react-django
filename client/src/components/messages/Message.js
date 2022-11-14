@@ -3,7 +3,12 @@ import { axiosInstance } from "../../utilities/axios";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./Message.css";
 
-function MyMessage({ currentUser, message, setRefresh }) {
+function MyMessage({
+  currentUser,
+  message,
+  userFriendOnlineStatus,
+  setRefresh,
+}) {
   const { user: sender } = message;
   const [style, setStyle] = useState({ flexDirection: "row" });
   const [editMode, setEditMode] = useState(false);
@@ -12,7 +17,7 @@ function MyMessage({ currentUser, message, setRefresh }) {
   const Img = sender.profile_img
     ? sender.profile_img
     : "https://wellbeingchirony.com/wp-content/uploads/2021/03/Deafult-Profile-Pitcher.png";
-  const online = sender.is_login
+  const online = userFriendOnlineStatus[sender]
     ? { backgroundColor: "green" }
     : { backgroundColor: "red" };
 
