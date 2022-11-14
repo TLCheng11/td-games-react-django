@@ -16,6 +16,7 @@ class UserConsumer(AsyncWebsocketConsumer):
 
     # need to accept the connection
     await self.accept()
+    await self.login_user()
 
   # disconnect from channel
   async def disconnect(self, code):
@@ -24,7 +25,11 @@ class UserConsumer(AsyncWebsocketConsumer):
       self.channel_name
     )
     await self.logout_user()
-    
+  
+  @sync_to_async
+  def login_user(self):
+    User.objects.filter(username=self.room_name).update(is_login=True)
+
   @sync_to_async
   def logout_user(self):
     User.objects.filter(username=self.room_name).update(is_login=False)
