@@ -51,11 +51,12 @@ function MyMessage({ currentUser, message, setRefresh }) {
   }
 
   function deleteMessage() {
-    fetch(`${fetchUrl}/messages/${message.id}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then(() => console.log("message deleted"))
+    axiosInstance
+      .delete(`chats/message_edit/${message.id}`)
+      .then((res) => {
+        console.log(res.data.message);
+        setRefresh((state) => !state);
+      })
       .catch(console.error);
   }
 

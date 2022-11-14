@@ -77,7 +77,7 @@ def message_list(request, chat_id):
     serializer = MessageSerializer(message)
     return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-@api_view(["PATCH"])
+@api_view(["PATCH", "DELETE"])
 @permission_classes([IsAuthenticated])
 def message_detail(request, id):
   try: 
@@ -94,3 +94,7 @@ def message_detail(request, id):
     if serializer.is_valid():
       serializer.save()
       return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+  if request.method == "DELETE":
+    message.delete()
+    return Response({"message": "message deleted."}, status=status.HTTP_202_ACCEPTED)
