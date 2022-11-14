@@ -17,7 +17,7 @@ function MyMessage({
   const Img = sender.profile_img
     ? sender.profile_img
     : "https://wellbeingchirony.com/wp-content/uploads/2021/03/Deafult-Profile-Pitcher.png";
-  const online = userFriendOnlineStatus[sender]
+  const online = userFriendOnlineStatus[sender.username]
     ? { backgroundColor: "green" }
     : { backgroundColor: "red" };
 

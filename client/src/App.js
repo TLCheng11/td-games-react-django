@@ -90,7 +90,9 @@ function App() {
       axiosInstance.get(`friends/`).then((res) => {
         setUserFriends(res.data.friends);
         setFriendInvites(res.data.pendings);
-        const onlineStatus = {};
+
+        // create a hash for self and all friends online status
+        const onlineStatus = { [currentUser.username]: currentUser.is_login };
         res.data.friends.forEach(
           (friend) => (onlineStatus[friend.username] = friend.is_login)
         );
