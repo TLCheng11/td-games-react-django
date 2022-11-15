@@ -87,6 +87,14 @@ function MessageList({ messageListPackage }) {
     } else if (res.method === "DELETE") {
       const newMessages = messages.filter((m) => m.id != res.data.id);
       setMessages(newMessages);
+    } else if (res.method === "PATCH") {
+      const newMessages = messages.map((m) => {
+        if (m.id === res.data.id) {
+          return res.data;
+        }
+        return m;
+      });
+      setMessages(newMessages);
     }
   };
 

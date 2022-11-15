@@ -105,18 +105,29 @@ def message_detail(request, id):
   if request.user != message.user:
     return Response({"errors": "only sender can edit message"}, status=status.HTTP_403_FORBIDDEN)
 
+  channel_layer = get_channel_layer()
+  room_group_name = 'chat_%s' % message.chat.id
+
   # UPDATE chats/message_edit/id/
   if request.method == "PATCH":
     serializer = MessageSerializer(message, data=request.data, partial=True)
     if serializer.is_valid():
       serializer.save()
+
+      async_to_sync(channel_layer.group_send)(
+        room_group_name, 
+        {
+          'type': 'send_message',
+          'method': request.method,
+          'data': serializer.data,
+        }
+      )
       return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
   if request.method == "DELETE":
-    serializer = MessageSerializer(message)
+    
     # send out the message through chat channel
-    channel_layer = get_channel_layer()
-    room_group_name = 'chat_%s' % message.chat.id
+    serializer = MessageSerializer(message)
     async_to_sync(channel_layer.group_send)(
       room_group_name, 
       {
