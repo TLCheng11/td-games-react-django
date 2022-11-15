@@ -113,5 +113,17 @@ def message_detail(request, id):
       return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
   if request.method == "DELETE":
+    serializer = MessageSerializer(message)
+    # send out the message through chat channel
+    channel_layer = get_channel_layer()
+    room_group_name = 'chat_%s' % message.chat.id
+    async_to_sync(channel_layer.group_send)(
+      room_group_name, 
+      {
+        'type': 'send_message',
+        'method': request.method,
+        'data': serializer.data,
+      }
+    )
     message.delete()
     return Response({"message": "message deleted."}, status=status.HTTP_202_ACCEPTED)
