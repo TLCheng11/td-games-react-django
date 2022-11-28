@@ -86,7 +86,7 @@ function App() {
   // ------------------------------------------------------------------------------------------------------------------------
 
   // ---------------------------------------- Friendlist Websockets ----------------------------------------
-  const [friendSockets, setFriendSockets] = useState([]);
+  // const [friendSockets, setFriendSockets] = useState([]);
 
   // to get friend list
   useEffect(() => {
@@ -110,39 +110,44 @@ function App() {
   }, [currentUser, refresh]);
 
   // to create all friend websockets
-  useEffect(() => {
-    if (currentUser.id && userFriends.length > 0) {
-      userFriends.forEach((friend) => {
-        const friendSocket = new WebSocket(
-          "ws://localhost:8000/ws/friends/" +
-            friend.username +
-            "/" +
-            currentUser.username +
-            "/"
-        );
-        setFriendSockets((sockets) => [...sockets, friendSocket]);
-      });
-    } else {
-      friendSockets.forEach((socket) => socket.close());
-      setFriendSockets([]);
-    }
+  // useEffect(() => {
+  //   if (currentUser.id && userFriends.length > 0) {
+  //     userFriends.forEach((friend) => {
+  //       const friendSocket = new WebSocket(
+  //         "ws://localhost:8000/ws/friends/" +
+  //           friend.username +
+  //           "/" +
+  //           currentUser.username +
+  //           "/"
+  //       );
+  //       setFriendSockets((sockets) => [...sockets, friendSocket]);
+  //     });
+  //   } else {
+  //     friendSockets.forEach((socket) => socket.close());
+  //     setFriendSockets([]);
+  //   }
 
-    return () => {
-      friendSockets.forEach((socket) => socket.close());
-      setFriendSockets([]);
-    };
-  }, [userFriends]);
+  //   return () => {
+  //     friendSockets.forEach((socket) => socket.close());
+  //     setFriendSockets([]);
+  //   };
+  // }, [userFriends]);
 
   // when a friend login
-  friendSockets.forEach((socket) => {
-    socket.onmessage = function (e) {
-      const { username, is_login } = JSON.parse(e.data);
-      setUserFriendOnlineStatus({
-        ...userFriendOnlineStatus,
-        [username]: is_login,
-      });
-    };
-  });
+  // friendSockets.forEach((socket) => {
+  //   socket.onmessage = function (e) {
+  //     const { username, is_login } = JSON.parse(e.data);
+  //     setUserFriendOnlineStatus({
+  //       ...userFriendOnlineStatus,
+  //       [username]: is_login,
+  //     });
+  //   };
+  // });
+
+  userSocket.onmessage = function (e) {
+    const { username, is_login } = JSON.parse(e.data);
+    console.log(username, is_login);
+  };
   // ------------------------------------------------------------------------------------------------------------------------
 
   // check if session saved user
