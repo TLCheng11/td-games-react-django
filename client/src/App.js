@@ -146,7 +146,10 @@ function App() {
 
   userSocket.onmessage = function (e) {
     const { username, is_login } = JSON.parse(e.data);
-    console.log(username, is_login);
+    setUserFriendOnlineStatus({
+      ...userFriendOnlineStatus,
+      [username]: is_login,
+    });
   };
   // ------------------------------------------------------------------------------------------------------------------------
 

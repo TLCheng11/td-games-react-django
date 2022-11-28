@@ -3,8 +3,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+
 from users.serializers import UserSerializer
 from users.models import MyUser
+
+import logging
+logger = logging.getLogger('django')
 
 # Create your views here.
 
@@ -36,6 +43,20 @@ class UserLogin(APIView):
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            
+            friends = MyUser.objects.filter(friend__user=user.id, friend__status="accepted")
+            for friend in friends:
+                channel_layer = get_channel_layer()
+                room_group_name = 'user_%s' % friend.username
+                async_to_sync(channel_layer.group_send)(
+                    room_group_name, 
+                        {
+                            'type': 'friend_login_status_update',
+                            'username': user.username,
+                            'is_login': request.data['is_login']
+                        }
+                    )
+
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
