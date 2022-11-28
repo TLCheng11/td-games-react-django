@@ -61,15 +61,6 @@ function App() {
       );
       setUserSocket(socket);
 
-      // to update login status
-      const friendSocket = new WebSocket(
-        "ws://localhost:8000/ws/friends/" +
-          currentUser.username +
-          "/" +
-          currentUser.username +
-          "/"
-      );
-
       // to join invite channel
       const inviteSocket = new WebSocket(
         "ws://localhost:8000/ws/invites/invite/" + currentUser.username + "/"
@@ -78,15 +69,13 @@ function App() {
 
       return () => {
         socket.close();
-        friendSocket.close();
         inviteSocket.close();
       };
     }
   }, [currentUser]);
   // ------------------------------------------------------------------------------------------------------------------------
 
-  // ---------------------------------------- Friendlist Websockets ----------------------------------------
-  // const [friendSockets, setFriendSockets] = useState([]);
+  // ---------------------------------------- Friendlist ----------------------------------------
 
   // to get friend list
   useEffect(() => {
@@ -108,41 +97,6 @@ function App() {
       setFriendInvites([]);
     }
   }, [currentUser, refresh]);
-
-  // to create all friend websockets
-  // useEffect(() => {
-  //   if (currentUser.id && userFriends.length > 0) {
-  //     userFriends.forEach((friend) => {
-  //       const friendSocket = new WebSocket(
-  //         "ws://localhost:8000/ws/friends/" +
-  //           friend.username +
-  //           "/" +
-  //           currentUser.username +
-  //           "/"
-  //       );
-  //       setFriendSockets((sockets) => [...sockets, friendSocket]);
-  //     });
-  //   } else {
-  //     friendSockets.forEach((socket) => socket.close());
-  //     setFriendSockets([]);
-  //   }
-
-  //   return () => {
-  //     friendSockets.forEach((socket) => socket.close());
-  //     setFriendSockets([]);
-  //   };
-  // }, [userFriends]);
-
-  // when a friend login
-  // friendSockets.forEach((socket) => {
-  //   socket.onmessage = function (e) {
-  //     const { username, is_login } = JSON.parse(e.data);
-  //     setUserFriendOnlineStatus({
-  //       ...userFriendOnlineStatus,
-  //       [username]: is_login,
-  //     });
-  //   };
-  // });
 
   userSocket.onmessage = function (e) {
     const { username, is_login } = JSON.parse(e.data);
