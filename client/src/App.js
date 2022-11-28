@@ -18,6 +18,8 @@ import TicTacToeMid from "./components/games/TicTacToe/TicTacToeMid";
 import Settings from "./components/settings/Settings";
 import WinLossMessage from "./utilities/WinLoseMessage";
 import Connect4 from "./components/games/Connect4/Connect4";
+import LoginForm from "./components/loginForms/LoginForm";
+import SignupForm from "./components/loginForms/SignupForm";
 
 function App() {
   const [firstEnter, setFirstEnter] = useState(true);
@@ -29,6 +31,8 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [onAlert, setOnAlert] = useState(false);
   const [alert, setAlert] = useState({ type: "alert", message: "alert" });
+  const [loginMode, setLoginMode] = useState(false);
+  const [signupMode, setSignupMode] = useState(false);
   const [onWinLose, setonWinLose] = useState(false);
   const [winLose, setwinLose] = useState({ type: "win", message: "You Win!" });
   const [chatId, setChatId] = useState("");
@@ -227,6 +231,8 @@ function App() {
     currentUser,
     unreadMessages,
     setCurrentUser,
+    setLoginMode,
+    setSignupMode,
     setShowFriends,
     setShowChats,
     setShowMessages,
@@ -292,11 +298,28 @@ function App() {
         </div>
       ) : null}
       {onAlert ? <AlertBox setOnAlert={setOnAlert} alert={alert} /> : null}
+      {loginMode ? (
+        <LoginForm
+          setCurrentUser={setCurrentUser}
+          setLoginMode={setLoginMode}
+          setSignupMode={setSignupMode}
+        />
+      ) : null}
+      {signupMode ? (
+        <SignupForm
+          setCurrentUser={setCurrentUser}
+          showAlert={showAlert}
+          setLoginMode={setLoginMode}
+          setSignupMode={setSignupMode}
+        />
+      ) : null}
       {onWinLose ? (
         <WinLossMessage setonWinLose={setonWinLose} winLose={winLose} />
       ) : null}
       <Header loginFormPackage={loginFormPackage} />
+
       {/* only show the following list when corrsponding button are clicked */}
+
       {showFriends ? (
         <FriendList friendListPackage={friendListPackage} />
       ) : null}

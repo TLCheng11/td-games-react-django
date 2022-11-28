@@ -1,8 +1,8 @@
 import { NavLink } from "react-router-dom";
-import "./Header.css"
-import LoginForm from "./LoginForm";
+import "./Header.css";
+import UserStatus from "./UserStatus";
 
-function Header({loginFormPackage}) {
+function Header({ loginFormPackage }) {
   return (
     <div id="header">
       <div>
@@ -11,7 +11,7 @@ function Header({loginFormPackage}) {
         </NavLink>
       </div>
       <div>
-        <LoginForm loginFormPackage={loginFormPackage} />
+        <UserStatus loginFormPackage={loginFormPackage} />
       </div>
     </div>
   );
