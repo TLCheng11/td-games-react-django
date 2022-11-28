@@ -101,19 +101,25 @@ function UserStatus({ loginFormPackage }) {
           </div>
         </div>
       ) : (
-        <div className="form-buttons-holder">
-          <input
+        <div className="header-buttons-holder">
+          <button
             id="login-btn"
-            type="submit"
+            className="submit-btn"
+            type="button"
             value="Login"
             onClick={() => setLoginMode((state) => !state)}
-          />
-          <input
+          >
+            Login
+          </button>
+          <button
             id="signup-btn"
+            className="submit-btn"
             type="button"
             value="Sign up"
             onClick={() => setSignupMode((state) => !state)}
-          />
+          >
+            Signup
+          </button>
         </div>
       )}
     </div>

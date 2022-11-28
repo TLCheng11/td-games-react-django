@@ -2,7 +2,7 @@ import { useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
 import "./LoginForm.css";
 
-function LoginForm({ setCurrentUser, setLoginMode }) {
+function LoginForm({ setCurrentUser, setLoginMode, setSignupMode }) {
   const [formInput, setFormInput] = useState({
     username: "",
     email: "",
@@ -43,48 +43,58 @@ function LoginForm({ setCurrentUser, setLoginMode }) {
 
   return (
     <div id="login-form-container">
-      <form id="login-form" onSubmit={onLogin}>
-        <div className="input-holder">
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Username"
-            value={formInput.username}
-            onChange={controlFormInput}
-            required
-          />
+      <div>
+        <div className="form-title">
+          <h1>LOGIN: </h1>
+          <h1 className="exit-btn" onClick={() => setLoginMode(false)}>
+            X
+          </h1>
         </div>
-        <div className="input-holder">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="text"
-            id="email"
-            name="email"
-            placeholder="email"
-            value={formInput.email}
-            onChange={controlFormInput}
-            required
-          />
-        </div>
-        <div className="input-holder">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Password"
-            value={formInput.password}
-            onChange={controlFormInput}
-            required
-          />
-        </div>
-        <div className="form-buttons-holder">
-          <input id="login-btn" type="submit" value="Login" />
-          <input id="signup-btn" type="button" value="Sign up" />
-        </div>
-      </form>
+        <form id="login-form" onSubmit={onLogin}>
+          <div className="input-holder">
+            <label htmlFor="email">Email:</label>
+            <input
+              type="text"
+              id="email"
+              name="email"
+              placeholder="email"
+              value={formInput.email}
+              onChange={controlFormInput}
+              required
+            />
+          </div>
+          <div className="input-holder">
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Password"
+              value={formInput.password}
+              onChange={controlFormInput}
+              required
+            />
+          </div>
+          <div className="form-buttons-holder">
+            <input
+              id="login-btn"
+              className="submit-btn"
+              type="submit"
+              value="Login"
+            />
+            <input
+              id="signup-btn"
+              className="switch-btn"
+              type="button"
+              value="Sign up"
+              onClick={() => {
+                setLoginMode(false);
+                setSignupMode(true);
+              }}
+            />
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

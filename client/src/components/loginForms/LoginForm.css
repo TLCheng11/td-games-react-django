@@ -14,6 +14,20 @@
   background-color: cornflowerblue;
 }
 
+.form-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.exit-btn {
+  cursor: pointer;
+  color: red;
+}
+
+.exit-btn:hover {
+  color: blueviolet;
+}
+
 .input-holder {
   display: flex;
   justify-content: space-between;
@@ -26,11 +40,20 @@
   height: 30px;
 }
 
-#login-btn,
-#signup-btn {
+.submit-btn {
   width: 30%;
   height: 100%;
   margin: 10px;
+  color: white;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.switch-btn {
+  width: 30%;
+  height: 100%;
+  margin: 10px;
+  border: none;
   color: white;
   background-color: transparent;
   cursor: pointer;

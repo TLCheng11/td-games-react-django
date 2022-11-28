@@ -1,6 +1,14 @@
 #login-status {
   position: absolute;
+  display: flex;
+  align-items: center;
+  height: 100%;
   right: 0;
+}
+
+#header-button-holder {
+  position: relative;
+  display: flex;
 }
 
 /* show user-menu after login */
