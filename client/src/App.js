@@ -50,7 +50,6 @@ function App() {
   // ---------------------------------------- User Websocket ----------------------------------------
   // state to hold user websocket instance
   const [userSocket, setUserSocket] = useState({});
-  // const [inviteSocket, setInviteSocket] = useState({});
 
   // create a websocket when user login
   // update user status to logout when websocket disconnect
@@ -61,15 +60,8 @@ function App() {
       );
       setUserSocket(socket);
 
-      // to join invite channel
-      // const inviteSocket = new WebSocket(
-      //   "ws://localhost:8000/ws/invites/invite/" + currentUser.username + "/"
-      // );
-      // setInviteSocket(inviteSocket);
-
       return () => {
         socket.close();
-        // inviteSocket.close();
       };
     }
   }, [currentUser]);
@@ -107,6 +99,8 @@ function App() {
         [data.username]: data.is_login,
       });
     } else if (data.action === "friend_invite") {
+      // TODO
+      // can update the friendlist and friend invite list base on data instead of refresh the fetch
       if (data.update) {
         setRefresh((state) => !state);
       }
@@ -136,19 +130,8 @@ function App() {
     }
   }, [currentUser]);
 
+  // TODO
   // track unread messages
-  useEffect(() => {
-    let intervalId;
-    // if (currentUser.id) {
-    //   intervalId = setInterval(() => {
-    //     fetch(`${fetchUrl}/messages_unread/${currentUser.id}`)
-    //       .then((res) => res.json())
-    //       .then(setUnreadMessages);
-    //   }, 2000);
-    // }
-
-    return () => clearInterval(intervalId);
-  }, [currentUser]);
 
   // to set intro animations
   useEffect(() => {
@@ -174,14 +157,6 @@ function App() {
     }, 3000);
     timeOutIds.forEach((id) => clearInterval(id));
   }
-
-  // update friendlist when receive invite signal
-  // inviteSocket.onmessage = function (e) {
-  //   const res = JSON.parse(e.data);
-  //   if (res.update) {
-  //     setRefresh((state) => !state);
-  //   }
-  // };
 
   // to show alert box
   function showAlert(message) {
@@ -214,7 +189,6 @@ function App() {
     userFriends,
     userFriendOnlineStatus,
     friendInvites,
-    // inviteSocket,
     refresh,
     setRefresh,
     setChatId,
