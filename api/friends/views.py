@@ -20,6 +20,18 @@ class FriendList(viewsets.ViewSet):
   permission_classes = [AllowAny]
   queryset = Friend.objects.all()
 
+  # helper function to update friend invite through user channel
+  def update_friend_invite_through_user_channel(self, username):
+      room_group_name = 'user_%s' % username
+      logger.info(room_group_name)
+      channel_layer = get_channel_layer()
+      async_to_sync(channel_layer.group_send)(
+          room_group_name, 
+              {
+                  'type': 'friend_invite'
+              }
+          )
+
   # GET api/friends/
   def list(self, request):
     # to get all User object as friend in User friend list
@@ -65,25 +77,17 @@ class FriendList(viewsets.ViewSet):
       serializer.save()
 
       # if invitation is vaild, create an opposite relation
-      friend = Friend.objects.get(user=relation["user"], friend=relation["friend"])
-      Friend.objects.create(user=friend.friend, friend=friend.user, invited_by=friend.invited_by)
+      invite = Friend.objects.get(user=relation["user"], friend=relation["friend"])
+      Friend.objects.create(user=invite.friend, friend=invite.user, invited_by=invite.invited_by)
 
       # use user channel to ask target to update friend list
-      room_group_name = 'user_%s' % friend.friend.username
-      logger.info(room_group_name)
-      channel_layer = get_channel_layer()
-      async_to_sync(channel_layer.group_send)(
-          room_group_name, 
-              {
-                  'type': 'friend_invite'
-              }
-          )
+      self.update_friend_invite_through_user_channel(invite.friend.username)
 
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
       #if relation already exist, return error message according to status
-      friend = Friend.objects.get(user=relation["user"], friend=relation["friend"])
-      if friend.status == "pending" or friend.status == "declined":
+      invite = Friend.objects.get(user=relation["user"], friend=relation["friend"])
+      if invite.status == "pending" or invite.status == "declined":
         return Response({"errors": "already have pending invite"}, status=status.HTTP_403_FORBIDDEN)
       return Response({"errors": "user already in friend list"}, status=status.HTTP_403_FORBIDDEN)
 
@@ -101,8 +105,15 @@ class FriendList(viewsets.ViewSet):
     if request.data["method"] == "accepted":
       invite.status = request.data["method"]
       invite.save()
+
+      # use user channel to ask target to update friend list
+      self.update_friend_invite_through_user_channel(invite.friend.username)
+
       return Response({"message": "invite accepted."}, status=status.HTTP_202_ACCEPTED)
     else:  
+
+      # use user channel to ask target to update friend list
+      self.update_friend_invite_through_user_channel(invite.friend.username)
       invite.delete()
       return Response({"message": "invite declined."}, status=status.HTTP_202_ACCEPTED)
     
@@ -121,5 +132,8 @@ class FriendList(viewsets.ViewSet):
       friend.delete()
     except:
       pass
+
+    # use user channel to ask target to update friend list
+    self.update_friend_invite_through_user_channel(invite.friend.username)
     invite.delete()
     return Response({"message": "invite cancaled."}, status=status.HTTP_202_ACCEPTED)
