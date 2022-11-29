@@ -1,7 +1,6 @@
 import json
 from asgiref.sync import sync_to_async, async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.layers import get_channel_layer
 from .models import MyUser as User
 
 import logging
@@ -36,6 +35,13 @@ class UserConsumer(AsyncWebsocketConsumer):
       'action': 'friend_login_or_logout',
       'username': event['username'],
       'is_login': event['is_login']
+    }))
+
+  # function to update friend invite actions
+  async def friend_invite(self, event):
+    await self.send(text_data=json.dumps({
+      'action': 'friend_invite',
+      'update': True
     }))
 
   @sync_to_async

@@ -2,10 +2,17 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import JSONParser
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 from .models import Friend
 from .serializers import FriendSerializer
 from users.models import MyUser as User
 from users.serializers import UserSerializer
+
+import logging
+logger = logging.getLogger('django')
 
 # Create your views here.
 
@@ -60,6 +67,18 @@ class FriendList(viewsets.ViewSet):
       # if invitation is vaild, create an opposite relation
       friend = Friend.objects.get(user=relation["user"], friend=relation["friend"])
       Friend.objects.create(user=friend.friend, friend=friend.user, invited_by=friend.invited_by)
+
+      # use user channel to ask target to update friend list
+      room_group_name = 'user_%s' % friend.friend.username
+      logger.info(room_group_name)
+      channel_layer = get_channel_layer()
+      async_to_sync(channel_layer.group_send)(
+          room_group_name, 
+              {
+                  'type': 'friend_invite'
+              }
+          )
+
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
       #if relation already exist, return error message according to status

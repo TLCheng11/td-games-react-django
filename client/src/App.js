@@ -50,7 +50,7 @@ function App() {
   // ---------------------------------------- User Websocket ----------------------------------------
   // state to hold user websocket instance
   const [userSocket, setUserSocket] = useState({});
-  const [inviteSocket, setInviteSocket] = useState({});
+  // const [inviteSocket, setInviteSocket] = useState({});
 
   // create a websocket when user login
   // update user status to logout when websocket disconnect
@@ -62,14 +62,14 @@ function App() {
       setUserSocket(socket);
 
       // to join invite channel
-      const inviteSocket = new WebSocket(
-        "ws://localhost:8000/ws/invites/invite/" + currentUser.username + "/"
-      );
-      setInviteSocket(inviteSocket);
+      // const inviteSocket = new WebSocket(
+      //   "ws://localhost:8000/ws/invites/invite/" + currentUser.username + "/"
+      // );
+      // setInviteSocket(inviteSocket);
 
       return () => {
         socket.close();
-        inviteSocket.close();
+        // inviteSocket.close();
       };
     }
   }, [currentUser]);
@@ -98,6 +98,7 @@ function App() {
     }
   }, [currentUser, refresh]);
 
+  // setup responds for different userSocket action
   userSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
     if (data.action === "friend_login_or_logout") {
@@ -105,6 +106,10 @@ function App() {
         ...userFriendOnlineStatus,
         [data.username]: data.is_login,
       });
+    } else if (data.action === "friend_invite") {
+      if (data.update) {
+        setRefresh((state) => !state);
+      }
     }
   };
   // ------------------------------------------------------------------------------------------------------------------------
@@ -171,12 +176,12 @@ function App() {
   }
 
   // update friendlist when receive invite signal
-  inviteSocket.onmessage = function (e) {
-    const res = JSON.parse(e.data);
-    if (res.update) {
-      setRefresh((state) => !state);
-    }
-  };
+  // inviteSocket.onmessage = function (e) {
+  //   const res = JSON.parse(e.data);
+  //   if (res.update) {
+  //     setRefresh((state) => !state);
+  //   }
+  // };
 
   // to show alert box
   function showAlert(message) {
@@ -209,7 +214,7 @@ function App() {
     userFriends,
     userFriendOnlineStatus,
     friendInvites,
-    inviteSocket,
+    // inviteSocket,
     refresh,
     setRefresh,
     setChatId,
