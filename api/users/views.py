@@ -43,20 +43,6 @@ class UserLogin(APIView):
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            
-            friends = MyUser.objects.filter(friend__user=user.id, friend__status="accepted")
-            for friend in friends:
-                channel_layer = get_channel_layer()
-                room_group_name = 'user_%s' % friend.username
-                async_to_sync(channel_layer.group_send)(
-                    room_group_name, 
-                        {
-                            'type': 'friend_login_status_update',
-                            'username': user.username,
-                            'is_login': request.data['is_login']
-                        }
-                    )
-
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

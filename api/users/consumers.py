@@ -20,7 +20,7 @@ class UserConsumer(AsyncWebsocketConsumer):
 
     # need to accept the connection
     await self.accept()
-    await self.login_user()
+    await self.update_login_status(True)
 
   # disconnect from channel
   async def disconnect(self, code):
@@ -28,7 +28,7 @@ class UserConsumer(AsyncWebsocketConsumer):
       self.room_group_name,
       self.channel_name
     )
-    await self.logout_user()
+    await self.update_login_status(False)
 
   # function to update friend login status
   async def friend_login_status_update(self, event):
@@ -36,27 +36,20 @@ class UserConsumer(AsyncWebsocketConsumer):
       'username': event['username'],
       'is_login': event['is_login']
     }))
-  
-  @sync_to_async
-  def login_user(self):
-    User.objects.filter(username=self.room_name).update(is_login=True)
 
   @sync_to_async
-  def logout_user(self):
-    User.objects.filter(username=self.room_name).update(is_login=False)
-
-# TODO
-# try to call other channel but not working
-  @sync_to_async
-  def notice_friends(self):
+  def update_login_status(self, status):
     user = User.objects.get(username=self.room_name)
+    user.is_login = status
+    user.save()
     friends = User.objects.filter(friend__user=user.id, friend__status="accepted")
     for friend in friends:
-      room = 'user_%s' % friend.username
-      async_to_sync(self.channel_layer.group_send(
-        room,
-        {
-          'type': 'friend_joined',
-          'username': friend.username
-        }
-      ))
+        room_group_name = 'user_%s' % friend.username
+        async_to_sync(self.channel_layer.group_send)(
+            room_group_name, 
+                {
+                    'type': 'friend_login_status_update',
+                    'username': user.username,
+                    'is_login': status
+                }
+            )
