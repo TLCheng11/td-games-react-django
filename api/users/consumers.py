@@ -33,6 +33,7 @@ class UserConsumer(AsyncWebsocketConsumer):
   # function to update friend login status
   async def friend_login_status_update(self, event):
     await self.send(text_data=json.dumps({
+      'action': 'friend_login_or_logout',
       'username': event['username'],
       'is_login': event['is_login']
     }))

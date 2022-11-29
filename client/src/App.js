@@ -99,11 +99,13 @@ function App() {
   }, [currentUser, refresh]);
 
   userSocket.onmessage = function (e) {
-    const { username, is_login } = JSON.parse(e.data);
-    setUserFriendOnlineStatus({
-      ...userFriendOnlineStatus,
-      [username]: is_login,
-    });
+    const data = JSON.parse(e.data);
+    if (data.action === "friend_login_or_logout") {
+      setUserFriendOnlineStatus({
+        ...userFriendOnlineStatus,
+        [data.username]: data.is_login,
+      });
+    }
   };
   // ------------------------------------------------------------------------------------------------------------------------
 
