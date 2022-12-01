@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { fetchUrl } from "../../utilities/GlobalVariables";
+import { axiosInstance } from "../../utilities/axios";
 import "./HomePage.css";
 
 function HomePage() {
@@ -17,11 +17,12 @@ function HomePage() {
     navigate(game);
   }
 
-  // useEffect(() => {
-  //   fetch(`${fetchUrl}/games`)
-  //   .then(res => res.json())
-  //   .then(setGames)
-  // }, [])
+  useEffect(() => {
+    axiosInstance.get(`games/`).then((res) => {
+      console.log(res.data);
+      setGames(res.data);
+    });
+  }, []);
 
   useEffect(() => {
     if (backScrollWidth === 0 && showCaseFrontRef.current && games.length > 0) {
