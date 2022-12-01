@@ -5,9 +5,9 @@ from django.db import models
 class Game(models.Model):
   title = models.CharField(max_length=255, unique=True)
   image_url = models.CharField(max_length=255)
-  description = models.TextField()
+  description = models.TextField(blank=True)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
   def __str__(self) -> str:
-    return self.title
+    return str(self.id) + ": " + self.title
