@@ -8,6 +8,7 @@ function ChatList({ chatListPackage }) {
   const { currentUser, setShowChats } = chatListPackage;
   const [userChats, setUserChats] = useState([]);
 
+  // TODO: track unread message
   // useEffect(() => {
   //   fetch(`${fetchUrl}/chats/${currentUser.id}`)
   //     .then(res => res.json())
@@ -27,8 +28,7 @@ function ChatList({ chatListPackage }) {
 
   useEffect(() => {
     axiosInstance.get(`chats/`).then((res) => {
-      console.log(res);
-      console.log("----");
+      setUserChats(res.data);
     });
   }, []);
 

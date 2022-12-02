@@ -201,6 +201,7 @@ function App() {
   const chatListPackage = {
     currentUser,
     unreadMessages,
+    userFriendOnlineStatus,
     setChatId,
     setShowFriends,
     setShowChats,
