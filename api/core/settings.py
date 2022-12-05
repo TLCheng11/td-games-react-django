@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'friends',
     'chats',
     'games',
+    'match_history_tic_tac_toe',
 ]
 
 MIDDLEWARE = [
