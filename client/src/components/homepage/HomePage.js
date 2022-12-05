@@ -19,7 +19,6 @@ function HomePage() {
 
   useEffect(() => {
     axiosInstance.get(`games/`).then((res) => {
-      console.log(res.data);
       setGames(res.data);
     });
   }, []);
@@ -33,7 +32,7 @@ function HomePage() {
 
   // scroll to left
   function scrollLeft() {
-    console.log("left");
+    // console.log("left");
     if (backScrollWidth > 0) {
       const left = backScrollWidth - 500;
       showCaseRef.current.scrollLeft = `${left}`;
@@ -46,7 +45,7 @@ function HomePage() {
 
   // scroll to right
   function scrollRight() {
-    console.log("right");
+    // console.log("right");
     // showCaseRef.current.style.animate( { scrollLeft: '0' }, scrollDuration);
     if (backScrollWidth < showCaseRef.current.scrollWidth - 500) {
       const right = backScrollWidth + 500;

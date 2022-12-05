@@ -6,16 +6,16 @@ import Match from "./Match";
 
 export default function AllMatches({ currentUser, gameId }) {
   const [allMatches, setAllMatches] = useState([]);
-  useEffect(() => {
-    getMatches();
-    const intervalId = setInterval(() => {
-      getMatches();
-    }, 1000);
+  // useEffect(() => {
+  //   getMatches();
+  //   const intervalId = setInterval(() => {
+  //     getMatches();
+  //   }, 1000);
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, []);
 
   function getMatches() {
     fetch(`${fetchUrl}/all_matches?user_id=${currentUser.id}&game_id=${gameId}`)

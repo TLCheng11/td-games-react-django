@@ -282,7 +282,10 @@ function App() {
             path="/match-making/:game_id"
             element={
               currentUser.id ? (
-                <MatchMaking matchMakingPackage={matchMakingPackage} />
+                <MatchMaking
+                  currentUser={currentUser}
+                  userFriendOnlineStatus={userFriendOnlineStatus}
+                />
               ) : (
                 <h1>Login to Play Game</h1>
               )

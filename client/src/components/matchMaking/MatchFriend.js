@@ -1,16 +1,21 @@
 import React from "react";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import { useState, useEffect } from "react";
-import "./MatchFriend.css"
+import "./MatchFriend.css";
 
-export default function MatchFriend({ friend, currentUser, gameId }) {
-  const [diffculty, setDiffculty] = useState("normal")
+export default function MatchFriend({
+  friend,
+  currentUser,
+  gameId,
+  userFriendOnlineStatus,
+}) {
+  const [diffculty, setDiffculty] = useState("normal");
   const [invited, setInvited] = useState(false);
 
   const Img = friend.profile_img
     ? friend.profile_img
     : "https://wellbeingchirony.com/wp-content/uploads/2021/03/Deafult-Profile-Pitcher.png";
-  const online = friend.is_login
+  const online = userFriendOnlineStatus[friend.username]
     ? { backgroundColor: "green" }
     : { backgroundColor: "red" };
 
@@ -32,7 +37,7 @@ export default function MatchFriend({ friend, currentUser, gameId }) {
       .then((res) => res.json())
       .then((data) => setInvited(true));
   }
-  console.log(diffculty)
+  console.log(diffculty);
   return (
     <div className="friend">
       <div className="profile-img-holder">
@@ -59,7 +64,10 @@ export default function MatchFriend({ friend, currentUser, gameId }) {
       </div>
       <div className="match-friend-diff">
         <p>Diffculty:</p>
-        <select value={diffculty} onChange={e => setDiffculty(e.target.value)}>
+        <select
+          value={diffculty}
+          onChange={(e) => setDiffculty(e.target.value)}
+        >
           <option value="normal">Normal</option>
           <option value="medium">Medium</option>
         </select>
