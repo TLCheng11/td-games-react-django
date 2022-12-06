@@ -11,7 +11,7 @@ class Game(models.Model):
   updated_at = models.DateTimeField(auto_now=True)
 
   def __str__(self) -> str:
-    return str(self.id) + ": " + self.title
+    return self.title
 
 class Match(models.Model):
   users = models.ManyToManyField(User, through="UserMatch")
@@ -21,6 +21,9 @@ class Match(models.Model):
   finished = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
+
+  def __str__(self) -> str:
+    return self.game.title
 
 class UserMatch(models.Model):
   options = (("pending", "pending"), ("accepted", "accepted"), ("declined", "declined"))
@@ -35,3 +38,6 @@ class UserMatch(models.Model):
 
   class Meta:
     unique_together = ("user", "match")
+
+  def __str__(self) -> str:
+    return str(self.id) + ": " + self.match.game.title + " match"

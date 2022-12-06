@@ -4,7 +4,7 @@ from games.models import Match
 
 # Create your models here.
 
-class TicTacToeHistory(models.Model):
+class MatchHistoryTicTacToe(models.Model):
   options = (("X", "X"), ("O", "O"))
 
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tic_tac_toe_histories")
