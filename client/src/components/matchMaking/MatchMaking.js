@@ -1,10 +1,10 @@
 import React from "react";
 import "./MatchMaking.css";
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { axiosInstance } from "../../utilities/axios";
 import MatchInviteFriend from "./MatchInviteFriend";
 import AllMatches from "./AllMatches";
-import { useLocation } from "react-router-dom";
-import { fetchUrl } from "../../utilities/GlobalVariables";
 
 export default function MatchMaking({ currentUser, userFriendOnlineStatus }) {
   let location = useLocation();
@@ -17,9 +17,7 @@ export default function MatchMaking({ currentUser, userFriendOnlineStatus }) {
   const [game, setGame] = useState({});
 
   useEffect(() => {
-    fetch(fetchUrl + "/games/" + gameId)
-      .then((res) => res.json())
-      .then((data) => setGame(data));
+    axiosInstance.get(`games/${gameId}/`).then((res) => setGame(res.data));
   }, []);
 
   return (

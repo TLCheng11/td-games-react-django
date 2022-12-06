@@ -37,7 +37,7 @@ export default function MatchFriend({
       .then((res) => res.json())
       .then((data) => setInvited(true));
   }
-  console.log(diffculty);
+  // console.log(diffculty);
   return (
     <div className="friend">
       <div className="profile-img-holder">
