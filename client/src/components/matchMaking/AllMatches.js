@@ -1,43 +1,40 @@
 import React from "react";
 import "./AllMatches.css";
 import { useEffect, useState } from "react";
-import { fetchUrl } from "../../utilities/GlobalVariables";
+import { axiosInstance } from "../../utilities/axios";
 import Match from "./Match";
 
 export default function AllMatches({ currentUser, gameId }) {
   const [allMatches, setAllMatches] = useState([]);
-  // useEffect(() => {
-  //   getMatches();
-  //   const intervalId = setInterval(() => {
-  //     getMatches();
-  //   }, 1000);
-
-  //   return () => {
-  //     clearInterval(intervalId);
-  //   };
-  // }, []);
+  useEffect(() => {
+    getMatches();
+  }, []);
 
   function getMatches() {
-    fetch(`${fetchUrl}/all_matches?user_id=${currentUser.id}&game_id=${gameId}`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        let obj = { pending: 1, "in match": 2, finished: 3, rejected: 4 };
-        data.sort(function (a, b) {
-          if (obj[a.usermatch.status] < obj[b.usermatch.status]) {
-            return -1;
-          }
+    axiosInstance.get(`games/${gameId}/matches/`).then((res) => {
+      console.log(res);
+    });
 
-          if (obj[a.usermatch.status] < obj[b.usermatch.status]) {
-            return 1;
-          }
+    // fetch(`${fetchUrl}/all_matches?user_id=${currentUser.id}&game_id=${gameId}`)
+    //   .then((res) => {
+    //     return res.json();
+    //   })
+    //   .then((data) => {
+    //     let obj = { pending: 1, "in match": 2, finished: 3, rejected: 4 };
+    //     data.sort(function (a, b) {
+    //       if (obj[a.usermatch.status] < obj[b.usermatch.status]) {
+    //         return -1;
+    //       }
 
-          return 0;
-        });
+    //       if (obj[a.usermatch.status] < obj[b.usermatch.status]) {
+    //         return 1;
+    //       }
 
-        setAllMatches(data);
-      });
+    //       return 0;
+    //     });
+
+    //     setAllMatches(data);
+    //   });
   }
 
   const MatchesToInclude = allMatches.map((obj) => {
