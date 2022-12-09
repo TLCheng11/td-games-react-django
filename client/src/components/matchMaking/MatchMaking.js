@@ -22,7 +22,11 @@ export default function MatchMaking({ currentUser, userFriendOnlineStatus }) {
 
   return (
     <div className="matchmaking-container">
-      <AllMatches currentUser={currentUser} gameId={gameId} />
+      <AllMatches
+        currentUser={currentUser}
+        gameId={gameId}
+        userFriendOnlineStatus={userFriendOnlineStatus}
+      />
       <div className="friend-invite-container">
         <button
           className="button-49"

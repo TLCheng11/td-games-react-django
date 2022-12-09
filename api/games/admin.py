@@ -12,7 +12,7 @@ class MatchAdminConfig(admin.ModelAdmin):
 
 class UserMatchAdminConfig(admin.ModelAdmin):
   ordering = ("id",)
-  list_display = ("id", "user", "match", "status")
+  list_display = ("id", "user", "match", "diffculty", "status")
 
 
 admin.site.register(Game, GameAdminConfig)

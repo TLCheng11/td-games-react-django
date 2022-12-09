@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
 import Match from "./Match";
 
-export default function AllMatches({ currentUser, gameId }) {
+export default function AllMatches({
+  currentUser,
+  gameId,
+  userFriendOnlineStatus,
+}) {
   const [allMatches, setAllMatches] = useState([]);
   useEffect(() => {
     getMatches();
@@ -13,6 +17,7 @@ export default function AllMatches({ currentUser, gameId }) {
   function getMatches() {
     axiosInstance.get(`games/${gameId}/matches/`).then((res) => {
       console.log(res);
+      setAllMatches(res.data);
     });
 
     // fetch(`${fetchUrl}/all_matches?user_id=${currentUser.id}&game_id=${gameId}`)
@@ -38,15 +43,22 @@ export default function AllMatches({ currentUser, gameId }) {
   }
 
   const MatchesToInclude = allMatches.map((obj) => {
+    const usermatch = obj.user_matches.filter(
+      (um) => um.user === currentUser.id
+    );
+    const friend = obj.users.filter((u) => u.id !== currentUser.id);
     return (
       <Match
-        key={obj.usermatch.id}
-        usermatch={obj.usermatch}
-        friend={obj.friend}
+        key={usermatch.id}
+        usermatch={usermatch[0]}
+        friend={friend[0]}
         currentUser={currentUser}
+        userFriendOnlineStatus={userFriendOnlineStatus}
       />
     );
   });
+
+  console.log(MatchesToInclude);
 
   return (
     <div id="match-list">

@@ -3,41 +3,46 @@ import "./Match.css";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import { useNavigate } from "react-router-dom";
 
-export default function Match({ usermatch, friend, currentUser }) {
-  const [gameUrl, setGameUrl] = useState("/tictactoe/")
+export default function Match({
+  usermatch,
+  friend,
+  currentUser,
+  userFriendOnlineStatus,
+}) {
+  const [gameUrl, setGameUrl] = useState("/tictactoe/");
   const [currentMove, setCurrentMove] = useState("");
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (usermatch.diffculty === "normal") {
-      setGameUrl("/tictactoe/")
-    } else if (usermatch.diffculty === "medium") {
-      setGameUrl("/tictactoemid/")
-    }
+  // useEffect(() => {
+  //   if (usermatch.diffculty === "normal") {
+  //     setGameUrl("/tictactoe/")
+  //   } else if (usermatch.diffculty === "medium") {
+  //     setGameUrl("/tictactoemid/")
+  //   }
 
-    const intervalId = setInterval(() => {
-      fetch(`${fetchUrl}/tic_tac_toe_match_last_history/${usermatch.match_id}`)
-      .then(res => res.json())
-      .then(history => {
-        if (history) {
-          if (history.user_id !== currentUser.id) {
-            setCurrentMove("Your turn!")
-          } else {
-            setCurrentMove("Waiting for opponent move...")
-          }
-        } else {
-          if (usermatch.invited_by === currentUser.id) {
-            setCurrentMove("Your turn!")
-          } else {
-            setCurrentMove("Waiting for opponent move...")
-          }
-        }
-      })
-    }, 1000)
+  //   const intervalId = setInterval(() => {
+  //     fetch(`${fetchUrl}/tic_tac_toe_match_last_history/${usermatch.match_id}`)
+  //     .then(res => res.json())
+  //     .then(history => {
+  //       if (history) {
+  //         if (history.user_id !== currentUser.id) {
+  //           setCurrentMove("Your turn!")
+  //         } else {
+  //           setCurrentMove("Waiting for opponent move...")
+  //         }
+  //       } else {
+  //         if (usermatch.invited_by === currentUser.id) {
+  //           setCurrentMove("Your turn!")
+  //         } else {
+  //           setCurrentMove("Waiting for opponent move...")
+  //         }
+  //       }
+  //     })
+  //   }, 1000)
 
-    return (() => clearInterval(intervalId))
-  }, []);
+  //   return (() => clearInterval(intervalId))
+  // }, []);
 
   function handleAccept() {
     let obj = { match_id: usermatch.match_id };
@@ -71,7 +76,7 @@ export default function Match({ usermatch, friend, currentUser }) {
   const Img = friend.profile_img
     ? friend.profile_img
     : "https://wellbeingchirony.com/wp-content/uploads/2021/03/Deafult-Profile-Pitcher.png";
-  const online = friend.is_login
+  const online = userFriendOnlineStatus[friend.username]
     ? { backgroundColor: "green" }
     : { backgroundColor: "red" };
 
@@ -87,8 +92,11 @@ export default function Match({ usermatch, friend, currentUser }) {
           {friend.username.slice(1)}
         </p>
         <div className="match-info">
-          <i>#{usermatch.match_id}:</i>
-          <i>{usermatch.diffculty.slice(0, 1).toUpperCase()}{usermatch.diffculty.slice(1)}</i>
+          <i>#{usermatch.id} :</i>
+          <i>
+            {usermatch.diffculty.slice(0, 1).toUpperCase()}
+            {usermatch.diffculty.slice(1)}
+          </i>
         </div>
       </div>
 
@@ -125,9 +133,7 @@ export default function Match({ usermatch, friend, currentUser }) {
                 >
                   Go to Match
                 </button>
-                <div>
-                  {currentMove}
-                </div>
+                <div>{currentMove}</div>
               </div>
             ) : (
               <>
@@ -141,9 +147,7 @@ export default function Match({ usermatch, friend, currentUser }) {
                     </p>
                     <button
                       className="button-71"
-                      onClick={() =>
-                        navigate(gameUrl + usermatch.match_id)
-                      }
+                      onClick={() => navigate(gameUrl + usermatch.match_id)}
                     >
                       See Results
                     </button>
