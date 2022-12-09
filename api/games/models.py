@@ -23,16 +23,18 @@ class Match(models.Model):
   updated_at = models.DateTimeField(auto_now=True)
 
   def __str__(self) -> str:
-    return self.game.title
+    return str(self.id) + ": " + self.game.title
 
 class UserMatch(models.Model):
-  options = (("pending", "pending"), ("accepted", "accepted"), ("declined", "declined"))
+  status_options = (("pending", "pending"), ("accepted", "accepted"), ("declined", "declined"))
+  diff_options = {("normal", "normal"), ("medium", "medium"), ("hard", "hard")}
 
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_matches")
   friend_id = models.IntegerField()
   invited_by = models.IntegerField()
   match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name="user_matches")
-  status = models.CharField(max_length=10, choices=options, default="pending")
+  status = models.CharField(max_length=10, choices=status_options, default="pending")
+  diffculty = models.CharField(max_length=6, choices=diff_options, default="normal")
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 

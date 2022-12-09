@@ -2,6 +2,7 @@ import React from "react";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import { useState, useEffect } from "react";
 import "./MatchFriend.css";
+import { axiosInstance } from "../../utilities/axios";
 
 export default function MatchFriend({
   friend,
@@ -26,16 +27,10 @@ export default function MatchFriend({
       friend_id: friend.id,
       diffculty: diffculty,
     };
-    fetch(`${fetchUrl}/create_game`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify(inviteObj),
-    })
-      .then((res) => res.json())
-      .then((data) => setInvited(true));
+    axiosInstance.post(`games/${gameId}/matches/`, inviteObj).then((res) => {
+      console.log(res);
+      if (res.status === 201) setInvited(true);
+    });
   }
   // console.log(diffculty);
   return (
