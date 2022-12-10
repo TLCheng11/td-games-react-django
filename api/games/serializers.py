@@ -10,7 +10,7 @@ class GameSerializer(serializers.ModelSerializer):
 class UserMatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserMatch
-        fields = ['id', 'match', 'user', 'friend_id', 'diffculty', 'status']
+        fields = ['id', 'match', 'user', 'friend_id', 'invited_by', 'diffculty', 'status']
 
 class MatchSerializer(serializers.ModelSerializer):
     users = UserSerializer(many=True)

@@ -58,16 +58,16 @@ def game_detail(request, id):
 @permission_classes([IsAuthenticated])
 def match_list(request, game_id):
 
-  # GET api/games/matches/
+  # GET api/games/game_id/matches/
   if request.method == "GET":
     matches = request.user.match_set.filter(game = game_id)
     serializer = MatchSerializer(matches, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-  # POST api/games/matches/
+  # POST api/games/game_id/matches/
   if request.method == "POST":
     matchData = {"game": game_id}
-    serializer = MatchSerializer(data=matchData)
+    serializer = MatchSerializer(data=matchData, partial=True)
     if serializer.is_valid():
       match = serializer.save()
 
@@ -94,6 +94,7 @@ def match_list(request, game_id):
 @permission_classes([IsAuthenticated])
 def user_match_list(request, game_id, match_id):
 
+  # PATCH api/games/game_id/match_id/user_matches/
   if request.method == "PATCH":
     UserMatch.objects.filter(match=match_id).update(status=request.data["status"])
     user_matches = UserMatch.objects.filter(match=match_id)

@@ -48,22 +48,18 @@ export default function Match({
 
   function handleAccept() {
     axiosInstance
-      .patch(`games/${gameId}/${usermatch.match}/`, { status: "accepted" })
+      .patch(`games/${gameId}/${usermatch.match}/user_matches/`, {
+        status: "accepted",
+      })
       .then((res) => {});
   }
 
   function handleReject() {
-    let obj = { match_id: usermatch.match_id };
-    fetch(`${fetchUrl}/reject_invite`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify(obj),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    axiosInstance
+      .patch(`games/${gameId}/${usermatch.match}/user_matches/`, {
+        status: "declined",
+      })
+      .then((res) => {});
   }
 
   const Img = friend.profile_img

@@ -27,20 +27,29 @@ export default function AllMatches({
   function getMatches() {
     axiosInstance.get(`games/${gameId}/matches/`).then((res) => {
       console.log(res);
+      console.log(res.data[0].user_matches[0].status);
       let obj = { pending: 1, "in match": 2, finished: 3, rejected: 4 };
-      res.data.sort(function (a, b) {
-        if (obj[a.user_matches[0].status] < obj[b.user_matches[0].status]) {
-          return -1;
-        }
+      const data = res.data
+        .filter(
+          (d) =>
+            !(
+              d.user_matches[0].status === "declined" &&
+              d.user_matches[0].invited_by !== currentUser.id
+            )
+        )
+        .sort(function (a, b) {
+          if (obj[a.user_matches[0].status] < obj[b.user_matches[0].status]) {
+            return -1;
+          }
 
-        if (obj[a.user_matches[0].status] > obj[b.user_matches[0].status]) {
-          return 1;
-        }
+          if (obj[a.user_matches[0].status] > obj[b.user_matches[0].status]) {
+            return 1;
+          }
 
-        return 0;
-      });
+          return 0;
+        });
 
-      setAllMatches(res.data);
+      setAllMatches(data);
     });
   }
 
