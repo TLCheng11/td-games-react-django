@@ -6,7 +6,11 @@ import { axiosInstance } from "../../utilities/axios";
 import MatchInviteFriend from "./MatchInviteFriend";
 import AllMatches from "./AllMatches";
 
-export default function MatchMaking({ currentUser, userFriendOnlineStatus }) {
+export default function MatchMaking({
+  userSocket,
+  currentUser,
+  userFriendOnlineStatus,
+}) {
   let location = useLocation();
 
   const gameId = location.pathname.substring(
@@ -23,6 +27,7 @@ export default function MatchMaking({ currentUser, userFriendOnlineStatus }) {
   return (
     <div className="matchmaking-container">
       <AllMatches
+        userSocket={userSocket}
         currentUser={currentUser}
         gameId={gameId}
         userFriendOnlineStatus={userFriendOnlineStatus}

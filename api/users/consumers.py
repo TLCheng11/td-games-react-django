@@ -60,3 +60,10 @@ class UserConsumer(AsyncWebsocketConsumer):
                     'is_login': status
                 }
             )
+
+  # function to send out match update signal
+  async def match_status_update(self, event):
+    await self.send(text_data=json.dumps({
+      'action': 'match_status_update',
+      'update': True
+    }))

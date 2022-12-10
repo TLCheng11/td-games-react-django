@@ -5,41 +5,43 @@ import { axiosInstance } from "../../utilities/axios";
 import Match from "./Match";
 
 export default function AllMatches({
+  userSocket,
   currentUser,
   gameId,
   userFriendOnlineStatus,
 }) {
   const [allMatches, setAllMatches] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     getMatches();
-  }, []);
+  }, [refresh]);
+
+  userSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    if (data.action === "match_status_update") {
+      setRefresh((state) => !state);
+    }
+  };
 
   function getMatches() {
     axiosInstance.get(`games/${gameId}/matches/`).then((res) => {
       console.log(res);
+      let obj = { pending: 1, "in match": 2, finished: 3, rejected: 4 };
+      res.data.sort(function (a, b) {
+        if (obj[a.user_matches[0].status] < obj[b.user_matches[0].status]) {
+          return -1;
+        }
+
+        if (obj[a.user_matches[0].status] > obj[b.user_matches[0].status]) {
+          return 1;
+        }
+
+        return 0;
+      });
+
       setAllMatches(res.data);
     });
-
-    // fetch(`${fetchUrl}/all_matches?user_id=${currentUser.id}&game_id=${gameId}`)
-    //   .then((res) => {
-    //     return res.json();
-    //   })
-    //   .then((data) => {
-    //     let obj = { pending: 1, "in match": 2, finished: 3, rejected: 4 };
-    //     data.sort(function (a, b) {
-    //       if (obj[a.usermatch.status] < obj[b.usermatch.status]) {
-    //         return -1;
-    //       }
-
-    //       if (obj[a.usermatch.status] < obj[b.usermatch.status]) {
-    //         return 1;
-    //       }
-
-    //       return 0;
-    //     });
-
-    //     setAllMatches(data);
-    //   });
   }
 
   const MatchesToInclude = allMatches.map((obj) => {
@@ -50,6 +52,7 @@ export default function AllMatches({
     return (
       <Match
         key={usermatch.id}
+        gameId={gameId}
         usermatch={usermatch[0]}
         friend={friend[0]}
         currentUser={currentUser}
@@ -58,7 +61,7 @@ export default function AllMatches({
     );
   });
 
-  console.log(MatchesToInclude);
+  // console.log(MatchesToInclude);
 
   return (
     <div id="match-list">

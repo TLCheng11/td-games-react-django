@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import JSONParser
 
 from channels.layers import get_channel_layer
@@ -17,13 +17,13 @@ logger = logging.getLogger('django')
 # Create your views here.
 
 class FriendList(viewsets.ViewSet):
-  permission_classes = [AllowAny]
+  permission_classes = [IsAuthenticated]
   queryset = Friend.objects.all()
 
   # helper function to update friend invite through user channel
   def update_friend_invite_through_user_channel(self, username):
       room_group_name = 'user_%s' % username
-      logger.info(room_group_name)
+      # logger.info(room_group_name)
       channel_layer = get_channel_layer()
       async_to_sync(channel_layer.group_send)(
           room_group_name, 

@@ -1,16 +1,31 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 from users.models import MyUser as User
 from .models import Game, Match, UserMatch
 from .serializers import GameSerializer, MatchSerializer
 
-# import logging
-# logger = logging.getLogger('django')
+import logging
+logger = logging.getLogger('django')
 
 # Create your views here.
+
+# Common function to update channel
+def update_match_status_through_user_channel(username):
+  room_group_name = 'user_%s' % username
+  # logger.info(room_group_name)
+  channel_layer = get_channel_layer()
+  async_to_sync(channel_layer.group_send)(
+    room_group_name, 
+      {
+        'type': 'match_status_update'
+      }
+    )
 
 # Game Controllers
 @api_view(["GET"])
@@ -24,7 +39,7 @@ def game_list(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def game_detail(request, id):
 
   try:
@@ -40,7 +55,7 @@ def game_detail(request, id):
 # ==========================================================================================
 # Match Controllers
 @api_view(["GET", "POST"])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def match_list(request, game_id):
 
   # GET api/games/matches/
@@ -71,3 +86,17 @@ def match_list(request, game_id):
 
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({"errors": "Fail to create match."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+# ==========================================================================================
+# UserMatch Controllers
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def user_match_list(request, game_id, match_id):
+
+  if request.method == "PATCH":
+    UserMatch.objects.filter(match=match_id).update(status=request.data["status"])
+    user_matches = UserMatch.objects.filter(match=match_id)
+    for um in user_matches:
+      update_match_status_through_user_channel(um.user.username)
+    return Response({"messages": "updated"}, status=status.HTTP_202_ACCEPTED)

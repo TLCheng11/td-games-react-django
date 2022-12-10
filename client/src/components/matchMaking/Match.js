@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./Match.css";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../utilities/axios";
 
 export default function Match({
+  gameId,
   usermatch,
   friend,
   currentUser,
@@ -45,18 +47,9 @@ export default function Match({
   // }, []);
 
   function handleAccept() {
-    let obj = { match_id: usermatch.match_id };
-
-    fetch(`${fetchUrl}/accept_invite`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify(obj),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    axiosInstance
+      .patch(`games/${gameId}/${usermatch.match}/`, { status: "accepted" })
+      .then((res) => {});
   }
 
   function handleReject() {

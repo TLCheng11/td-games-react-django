@@ -283,6 +283,7 @@ function App() {
             element={
               currentUser.id ? (
                 <MatchMaking
+                  userSocket={userSocket}
                   currentUser={currentUser}
                   userFriendOnlineStatus={userFriendOnlineStatus}
                 />
