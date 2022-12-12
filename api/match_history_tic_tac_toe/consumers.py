@@ -22,8 +22,8 @@ class TicTacToeConsumer(AsyncWebsocketConsumer):
   # sending back message
   # the function name here link to the 'type' in the .group_send method
   async def update_move(self, event):
-    if (self.current_user == event['to_user']):
-      await self.send(text_data=json.dumps(event['new_move']))
+    # if (self.current_user != event['user']):
+    await self.send(text_data=json.dumps(event['new_move']))
 
   # disconnect from channel
   async def disconnect(self, code):

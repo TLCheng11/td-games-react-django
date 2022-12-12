@@ -82,6 +82,19 @@ def match_detail(request, match_id):
     if serializer.is_valid():
       serializer.save()
       match.save()
+
+      room_group_name = 'tictactoe_%s' % match.id
+      logger.info(room_group_name)
+      channel_layer = get_channel_layer()
+      async_to_sync(channel_layer.group_send)(
+        room_group_name, 
+          {
+            'type': 'update_move',
+            'user': request.user.username,
+            'new_move': serializer.data,
+          }
+        )
+
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({"errors": "fail to add history"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 

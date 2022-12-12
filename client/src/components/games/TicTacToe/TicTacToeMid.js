@@ -14,6 +14,7 @@ function TicTacToe({ ticTacToePackage }) {
   const [gameContinue, setGameContinue] = useState(false);
   const [replay, setReplay] = useState(false);
   const [intervalId, setIntervalId] = useState(0);
+  const [ticTacToeSocket, setTicTacToeSocket] = useState({});
 
   const navigate = useNavigate();
 
@@ -114,6 +115,19 @@ function TicTacToe({ ticTacToePackage }) {
         setGameContinue(true);
       }
     });
+
+    const socket = new WebSocket(
+      "ws://localhost:8000/ws/tictactoe/" +
+        matchId +
+        "/" +
+        currentUser.username +
+        "/"
+    );
+    setTicTacToeSocket(socket);
+
+    return () => {
+      socket.close();
+    };
 
     // fetch(`${fetchUrl}/tic_tac_toe_match_data?match_id=${matchId}&length=25`)
     //   .then((res) => res.json())
@@ -263,6 +277,30 @@ function TicTacToe({ ticTacToePackage }) {
   // console.log(gameFinished)
   // console.log(intervalId)
   // console.log("XXXXXXXXXX")
+
+  // --------------------------- using websocket to update moves -----------------------------
+  ticTacToeSocket.onmessage = (e) => {
+    const res = JSON.parse(e.data);
+
+    console.log(res);
+    const i = res.position;
+    const newboard = [...board];
+    newboard[res.position] = res.player;
+    setBoard(newboard);
+
+    fieldRefs[i].current.textContent = res.player;
+    res.player === "X"
+      ? (fieldRefs[i].current.style.color = "red")
+      : (fieldRefs[i].current.style.color = "blue");
+    fieldRefs[i].current.parentNode.style.transform = "rotateY(180deg)";
+    fieldRefs[i].current.parentNode.style.pointerEvents = "none";
+
+    if (checkWinner(newboard)) {
+      setGameFinished(true);
+    } else {
+      setCurrentSide(res.player === "X" ? "O" : "X");
+    }
+  };
 
   // --------------------------- tic tac toe logics -----------------------------
   const winCombinations = [
