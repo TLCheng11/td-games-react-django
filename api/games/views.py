@@ -85,6 +85,10 @@ def match_list(request, game_id):
                               match=match,
                               diffculty=request.data["diffculty"])
 
+      # send sign to related users to update match list
+      for username in [request.user.username, friend.username]:
+        update_match_status_through_user_channel(username)
+
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({"errors": "Fail to create match."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 

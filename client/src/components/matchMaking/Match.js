@@ -22,6 +22,7 @@ export default function Match({
       setGameUrl("/tictactoemid/");
     }
 
+    // TODO: auto update game status on matches list
     //   const intervalId = setInterval(() => {
     //     fetch(`${fetchUrl}/tic_tac_toe_match_last_history/${usermatch.match_id}`)
     //     .then(res => res.json())
