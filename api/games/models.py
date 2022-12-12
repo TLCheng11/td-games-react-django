@@ -26,8 +26,8 @@ class Match(models.Model):
     return str(self.id) + ": " + self.game.title
 
 class UserMatch(models.Model):
-  status_options = (("pending", "pending"), ("accepted", "accepted"), ("declined", "declined"))
-  diff_options = {("normal", "normal"), ("medium", "medium"), ("hard", "hard")}
+  status_options = (("pending", "pending"), ("accepted", "accepted"), ("declined", "declined"), ("finished", "finished"))
+  diff_options = (("normal", "normal"), ("medium", "medium"), ("hard", "hard"))
 
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_matches")
   friend_id = models.IntegerField()

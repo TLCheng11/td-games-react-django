@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./Match.css";
-import { fetchUrl } from "../../utilities/GlobalVariables";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../utilities/axios";
 
@@ -16,35 +15,35 @@ export default function Match({
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (usermatch.diffculty === "normal") {
-  //     setGameUrl("/tictactoe/")
-  //   } else if (usermatch.diffculty === "medium") {
-  //     setGameUrl("/tictactoemid/")
-  //   }
+  useEffect(() => {
+    if (usermatch.diffculty === "normal") {
+      setGameUrl("/tictactoe/");
+    } else if (usermatch.diffculty === "medium") {
+      setGameUrl("/tictactoemid/");
+    }
 
-  //   const intervalId = setInterval(() => {
-  //     fetch(`${fetchUrl}/tic_tac_toe_match_last_history/${usermatch.match_id}`)
-  //     .then(res => res.json())
-  //     .then(history => {
-  //       if (history) {
-  //         if (history.user_id !== currentUser.id) {
-  //           setCurrentMove("Your turn!")
-  //         } else {
-  //           setCurrentMove("Waiting for opponent move...")
-  //         }
-  //       } else {
-  //         if (usermatch.invited_by === currentUser.id) {
-  //           setCurrentMove("Your turn!")
-  //         } else {
-  //           setCurrentMove("Waiting for opponent move...")
-  //         }
-  //       }
-  //     })
-  //   }, 1000)
+    //   const intervalId = setInterval(() => {
+    //     fetch(`${fetchUrl}/tic_tac_toe_match_last_history/${usermatch.match_id}`)
+    //     .then(res => res.json())
+    //     .then(history => {
+    //       if (history) {
+    //         if (history.user_id !== currentUser.id) {
+    //           setCurrentMove("Your turn!")
+    //         } else {
+    //           setCurrentMove("Waiting for opponent move...")
+    //         }
+    //       } else {
+    //         if (usermatch.invited_by === currentUser.id) {
+    //           setCurrentMove("Your turn!")
+    //         } else {
+    //           setCurrentMove("Waiting for opponent move...")
+    //         }
+    //       }
+    //     })
+    //   }, 1000)
 
-  //   return (() => clearInterval(intervalId))
-  // }, []);
+    //   return (() => clearInterval(intervalId))
+  }, []);
 
   function handleAccept() {
     axiosInstance
@@ -114,7 +113,7 @@ export default function Match({
           </>
         ) : (
           <>
-            {usermatch.status === "in match" ? (
+            {usermatch.status === "accepted" ? (
               <div>
                 <button
                   className="button-70"
@@ -145,7 +144,7 @@ export default function Match({
                   <p>
                     <i
                       className={
-                        usermatch.status === "rejected" ? "rejected-text" : ""
+                        usermatch.status === "declined" ? "rejected-text" : ""
                       }
                     >
                       {usermatch.status.slice(0, 1).toUpperCase()}

@@ -28,7 +28,7 @@ export default function AllMatches({
     axiosInstance.get(`games/${gameId}/matches/`).then((res) => {
       console.log(res);
       console.log(res.data[0].user_matches[0].status);
-      let obj = { pending: 1, "in match": 2, finished: 3, rejected: 4 };
+      const obj = { accepted: 1, pending: 2, finished: 3, decline: 4 };
       const data = res.data
         .filter(
           (d) =>
