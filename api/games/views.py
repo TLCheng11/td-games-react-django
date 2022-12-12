@@ -152,6 +152,7 @@ def match_detail(request, game_id, match_id):
     except:
       return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    match.user_matches.update(status="finished")
     match.finished = request.data["finished"]
     match.save()
     serializer = MatchSerializer(match)
