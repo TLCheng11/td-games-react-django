@@ -9,7 +9,7 @@ from asgiref.sync import async_to_sync
 from users.models import MyUser as User
 from .models import Game, Match, UserMatch
 from .serializers import GameSerializer, MatchSerializer
-from match_history_tic_tac_toe.serializers import TicTacToeMatchHistorySerializer
+# from match_history_tic_tac_toe.serializers import TicTacToeMatchHistorySerializer
 
 import logging
 logger = logging.getLogger('django')
@@ -92,75 +92,75 @@ def match_list(request, game_id):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({"errors": "Fail to create match."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-@api_view(["GET", "POST", "PATCH"])
-@permission_classes([IsAuthenticated])
-def match_detail(request, game_id, match_id):
+# @api_view(["GET", "POST", "PATCH"])
+# @permission_classes([IsAuthenticated])
+# def match_detail(request, game_id, match_id):
 
-  # GET api/games/game_id/matches/match_id/
-  if request.method == "GET":
-    try:
-      match = Match.objects.get(pk=match_id)
-    except:
-      return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
+#   # GET api/games/game_id/matches/match_id/
+#   if request.method == "GET":
+#     try:
+#       match = Match.objects.get(pk=match_id)
+#     except:
+#       return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    match_serializer = MatchSerializer(match)
-    result = {"match": match_serializer.data, "history":"new game"}
-    history = match.tic_tac_toe_histories.last()
+#     match_serializer = MatchSerializer(match)
+#     result = {"match": match_serializer.data, "history":"new game"}
+#     history = match.tic_tac_toe_histories.last()
 
-    if history:
-      history_serializer = TicTacToeMatchHistorySerializer(history)
-      result["history"] = history_serializer.data
+#     if history:
+#       history_serializer = TicTacToeMatchHistorySerializer(history)
+#       result["history"] = history_serializer.data
 
-    if match.game_status == "":
-      # create empty board base on diffculty
-      first = match.user_matches.first()
-      second = match.user_matches.last()
-      board = ""
-      if first.diffculty == "normal":
-        board = '{"board":[" ", " ", " ", " ", " ", " ", " ", " ", " "]}'
-      else:
-        board = '{"board":[" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]}'
-      # create game_settings base on 
-      x = first.user
-      o = second.user
-      game_settings = '{"X":['+str(x.id)+',"'+x.username+'"],"O":['+str(o.id)+',"'+o.username+'"]}'
-      # update match data
-      match.game_status = board
-      match.game_settings = game_settings
-      match.save()
-      match_serializer = MatchSerializer(match)
-      result["match"] = match_serializer.data
-    # logger.info(result)
-    return Response(result, status=status.HTTP_200_OK)
+#     if match.game_status == "":
+#       # create empty board base on diffculty
+#       first = match.user_matches.first()
+#       second = match.user_matches.last()
+#       board = ""
+#       if first.diffculty == "normal":
+#         board = '{"board":[" ", " ", " ", " ", " ", " ", " ", " ", " "]}'
+#       else:
+#         board = '{"board":[" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]}'
+#       # create game_settings base on 
+#       x = first.user
+#       o = second.user
+#       game_settings = '{"X":['+str(x.id)+',"'+x.username+'"],"O":['+str(o.id)+',"'+o.username+'"]}'
+#       # update match data
+#       match.game_status = board
+#       match.game_settings = game_settings
+#       match.save()
+#       match_serializer = MatchSerializer(match)
+#       result["match"] = match_serializer.data
+#     # logger.info(result)
+#     return Response(result, status=status.HTTP_200_OK)
 
-  # POST api/games/game_id/matches/match_id/
-  if request.method == "POST":
-    try:
-      match = Match.objects.get(pk=match_id)
-    except:
-      return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
+#   # POST api/games/game_id/matches/match_id/
+#   if request.method == "POST":
+#     try:
+#       match = Match.objects.get(pk=match_id)
+#     except:
+#       return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
     
-    match.game_status = request.data["game_status"]
-    history_data = {"user": request.user.id ,"match": match.id, "player": request.data["player"], "position": request.data["position"]}
-    serializer = TicTacToeMatchHistorySerializer(data=history_data)
-    if serializer.is_valid():
-      serializer.save()
-      match.save()
-      return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response({"errors": "fail to add history"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+#     match.game_status = request.data["game_status"]
+#     history_data = {"user": request.user.id ,"match": match.id, "player": request.data["player"], "position": request.data["position"]}
+#     serializer = TicTacToeMatchHistorySerializer(data=history_data)
+#     if serializer.is_valid():
+#       serializer.save()
+#       match.save()
+#       return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     return Response({"errors": "fail to add history"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-  # PATCH api/games/game_id/matches/match_id/
-  if request.method == "PATCH":
-    try:
-      match = Match.objects.get(pk=match_id)
-    except:
-      return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
+#   # PATCH api/games/game_id/matches/match_id/
+#   if request.method == "PATCH":
+#     try:
+#       match = Match.objects.get(pk=match_id)
+#     except:
+#       return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    match.user_matches.update(status="finished")
-    match.finished = request.data["finished"]
-    match.save()
-    serializer = MatchSerializer(match)
-    return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+#     match.user_matches.update(status="finished")
+#     match.finished = request.data["finished"]
+#     match.save()
+#     serializer = MatchSerializer(match)
+#     return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 # ==========================================================================================
 # UserMatch Controllers

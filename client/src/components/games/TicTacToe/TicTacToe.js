@@ -46,7 +46,7 @@ function TicTacToe({ ticTacToePackage }) {
   ];
 
   useEffect(() => {
-    axiosInstance.get(`games/1/matches/${matchId}`).then((res) => {
+    axiosInstance.get(`tictactoe/${matchId}/`).then((res) => {
       console.log(res.data);
       const data = res.data;
       const fetchBoard = JSON.parse(data.match.game_status).board;
@@ -340,7 +340,7 @@ function TicTacToe({ ticTacToePackage }) {
     };
 
     // post data on player move
-    axiosInstance.post(`games/1/matches/${matchId}`, playObj).then((res) => {
+    axiosInstance.post(`tictactoe/${matchId}/`, playObj).then((res) => {
       console.log(res.data);
     });
 
@@ -363,7 +363,7 @@ function TicTacToe({ ticTacToePackage }) {
     e.target.parentNode.style.pointerEvents = "none";
     if (checkWinner(board)) {
       axiosInstance
-        .patch(`games/1/matches/${matchId}`, { finished: true })
+        .patch(`tictactoe/${matchId}/`, { finished: true })
         .then((res) => {
           console.log(res.data);
         });

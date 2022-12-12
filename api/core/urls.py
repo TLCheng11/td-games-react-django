@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/friends/', include('friends.urls')),
     path('api/chats/', include('chats.urls')),
     path('api/games/', include('games.urls')),
+    path('api/tictactoe/', include('match_history_tic_tac_toe.urls')),
 ]
