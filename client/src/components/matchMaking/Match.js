@@ -117,7 +117,7 @@ export default function Match({
               <div>
                 <button
                   className="button-70"
-                  onClick={() => navigate(gameUrl + usermatch.match_id)}
+                  onClick={() => navigate(gameUrl + usermatch.match)}
                 >
                   Go to Match
                 </button>

@@ -9,6 +9,7 @@ from asgiref.sync import async_to_sync
 from users.models import MyUser as User
 from .models import Game, Match, UserMatch
 from .serializers import GameSerializer, MatchSerializer
+from match_history_tic_tac_toe.serializers import TicTacToeMatchHistorySerializer
 
 import logging
 logger = logging.getLogger('django')
@@ -86,6 +87,48 @@ def match_list(request, game_id):
 
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({"errors": "Fail to create match."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def match_detail(request, game_id, match_id):
+
+  # GET api/games/game_id/matches/match_id/
+  if request.method == "GET":
+    try:
+      match = Match.objects.get(pk=match_id)
+    except:
+      return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    match_serializer = MatchSerializer(match)
+    result = {"match": match_serializer.data, "history":"new game"}
+    history = match.tic_tac_toe_histories
+
+    if history.count() > 0:
+      history_serializer = TicTacToeMatchHistorySerializer(history, many=True)
+      result["history"] = history_serializer.data
+
+    if match.game_status == "":
+      # create empty board base on diffculty
+      first = match.user_matches.first()
+      second = match.user_matches.last()
+      board = ""
+      if first.diffculty == "normal":
+        board = '{"board":[" ", " ", " ", " ", " ", " ", " ", " ", " "]}'
+      else:
+        board = '{"board":[" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]}'
+      # create game_settings base on 
+      x = first.user
+      o = second.user
+      game_settings = '{"X":['+str(x.id)+',"'+x.username+'"],"O":['+str(o.id)+',"'+o.username+'"]}'
+      # update match data
+      match.game_status = board
+      match.game_settings = game_settings
+      match.save()
+      match_serializer = MatchSerializer(match)
+      result["match"] = match_serializer.data
+    # logger.info(result)
+    return Response(result, status=status.HTTP_200_OK)
+
 
 # ==========================================================================================
 # UserMatch Controllers
