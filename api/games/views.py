@@ -129,6 +129,21 @@ def match_detail(request, game_id, match_id):
     # logger.info(result)
     return Response(result, status=status.HTTP_200_OK)
 
+  # POST api/games/game_id/matches/match_id/
+  if request.method == "POST":
+    try:
+      match = Match.objects.get(pk=match_id)
+    except:
+      return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    match.game_status = request.data["game_status"]
+    history_data = {"user": request.user.id ,"match": match.id, "player": request.data["player"], "position": request.data["position"]}
+    serializer = TicTacToeMatchHistorySerializer(data=history_data)
+    if serializer.is_valid():
+      serializer.save()
+      match.save()
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response({"errors": "fail to add history"}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 # ==========================================================================================
 # UserMatch Controllers

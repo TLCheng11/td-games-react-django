@@ -55,7 +55,7 @@ function TicTacToe({ ticTacToePackage }) {
       } else {
         fetchBoard.forEach((v, i) => {
           // console.log(i, v)
-          if (v != " ") {
+          if (v !== " ") {
             fieldRefs[i].current.textContent = v;
             v === "X"
               ? (fieldRefs[i].current.style.color = "red")
@@ -247,7 +247,7 @@ function TicTacToe({ ticTacToePackage }) {
   }
 
   function turn_count(board) {
-    return board.filter((index) => index != " ").length;
+    return board.filter((index) => index !== " ").length;
   }
 
   function won(board) {
@@ -326,16 +326,20 @@ function TicTacToe({ ticTacToePackage }) {
     };
 
     // post data on player move
-    fetch(`${fetchUrl}/tic_tac_toe_move`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify(playObj),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    axiosInstance.post(`games/1/matches/${matchId}`, playObj).then((res) => {
+      console.log(res.data);
+    });
+
+    // fetch(`${fetchUrl}/tic_tac_toe_move`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     // 'Content-Type': 'application/x-www-form-urlencoded',
+    //   },
+    //   body: JSON.stringify(playObj),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => console.log(data));
 
     e.target.textContent = currentSide;
     currentSide === "X"
@@ -344,18 +348,25 @@ function TicTacToe({ ticTacToePackage }) {
     e.target.parentNode.style.transform = "rotateY(180deg)";
     e.target.parentNode.style.pointerEvents = "none";
     if (checkWinner(board)) {
-      fetch(`${fetchUrl}/tic_tac_toe_finished/${matchId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          finished: true,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log(data));
+      axiosInstance
+        .patch(`games/1/matches/${matchId}`, { finished: true })
+        .then((res) => {
+          console.log(res.data);
+        });
+
+      // fetch(`${fetchUrl}/tic_tac_toe_finished/${matchId}`, {
+      //   method: "PATCH",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     finished: true,
+      //   }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data));
+
       setGameFinished(true);
     } else {
       setCurrentSide((currentSide) => (currentSide === "X" ? "O" : "X"));
@@ -400,7 +411,7 @@ function TicTacToe({ ticTacToePackage }) {
                     <div
                       className={styles.winnerSide}
                       style={
-                        winner == "X" ? { color: "red" } : { color: "blue" }
+                        winner === "X" ? { color: "red" } : { color: "blue" }
                       }
                     >
                       {winner}
@@ -446,12 +457,12 @@ function TicTacToe({ ticTacToePackage }) {
               Connect 3{" "}
               <div
                 style={
-                  gameSettings["X"][0] == currentUser.id
+                  gameSettings["X"][0] === currentUser.id
                     ? { color: "red" }
                     : { color: "blue" }
                 }
               >
-                {gameSettings["X"][0] == currentUser.id ? "X" : "O"}
+                {gameSettings["X"][0] === currentUser.id ? "X" : "O"}
               </div>{" "}
               to win.
             </div>
