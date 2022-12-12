@@ -88,7 +88,7 @@ def match_list(request, game_id):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({"errors": "Fail to create match."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-@api_view(["GET", "POST"])
+@api_view(["GET", "POST", "PATCH"])
 @permission_classes([IsAuthenticated])
 def match_detail(request, game_id, match_id):
 
@@ -101,10 +101,10 @@ def match_detail(request, game_id, match_id):
 
     match_serializer = MatchSerializer(match)
     result = {"match": match_serializer.data, "history":"new game"}
-    history = match.tic_tac_toe_histories
+    history = match.tic_tac_toe_histories.last()
 
-    if history.count() > 0:
-      history_serializer = TicTacToeMatchHistorySerializer(history, many=True)
+    if history:
+      history_serializer = TicTacToeMatchHistorySerializer(history)
       result["history"] = history_serializer.data
 
     if match.game_status == "":
@@ -144,6 +144,18 @@ def match_detail(request, game_id, match_id):
       match.save()
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({"errors": "fail to add history"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+  # PATCH api/games/game_id/matches/match_id/
+  if request.method == "PATCH":
+    try:
+      match = Match.objects.get(pk=match_id)
+    except:
+      return Response({"errors": "match not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    match.finished = request.data["finished"]
+    match.save()
+    serializer = MatchSerializer(match)
+    return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 # ==========================================================================================
 # UserMatch Controllers
