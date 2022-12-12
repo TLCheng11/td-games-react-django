@@ -14,6 +14,7 @@ function TicTacToe({ ticTacToePackage }) {
   const [gameContinue, setGameContinue] = useState(false);
   const [replay, setReplay] = useState(false);
   const [intervalId, setIntervalId] = useState(0);
+  const [ticTacToeSocket, setTicTacToeSocket] = useState({});
 
   const navigate = useNavigate();
 
@@ -77,6 +78,19 @@ function TicTacToe({ ticTacToePackage }) {
         setGameContinue(true);
       }
     });
+
+    const socket = new WebSocket(
+      "ws://localhost:8000/ws/tictactoe/" +
+        matchId +
+        "/" +
+        currentUser.username +
+        "/"
+    );
+    setTicTacToeSocket(socket);
+
+    return () => {
+      socket.close();
+    };
 
     // fetch(`${fetchUrl}/tic_tac_toe_match_data?match_id=${matchId}&length=9`)
     //   .then((res) => res.json())
