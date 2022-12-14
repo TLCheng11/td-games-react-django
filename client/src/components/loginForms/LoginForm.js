@@ -24,7 +24,7 @@ function LoginForm({ setCurrentUser, setLoginMode, setSignupMode }) {
     axiosInstance
       .post(`token/`, formInput)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         sessionStorage.setItem("access_token", res.data.access);
         sessionStorage.setItem("refresh_token", res.data.refresh);
         axiosInstance.defaults.headers["Authorization"] =

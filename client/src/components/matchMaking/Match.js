@@ -136,7 +136,7 @@ export default function Match({
                     </p>
                     <button
                       className="button-71"
-                      onClick={() => navigate(gameUrl + usermatch.match_id)}
+                      onClick={() => navigate(gameUrl + usermatch.match)}
                     >
                       See Results
                     </button>
