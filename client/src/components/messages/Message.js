@@ -59,7 +59,7 @@ function MyMessage({
     axiosInstance
       .delete(`chats/message_edit/${message.id}`)
       .then((res) => {
-        console.log(res.data.message);
+        // console.log(res.data.message);
         setRefresh((state) => !state);
       })
       .catch(console.error);

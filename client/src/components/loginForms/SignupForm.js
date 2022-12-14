@@ -27,17 +27,17 @@ function SignupForm({
     if (formInput.username.match(/^[\w]*$/g)) {
       if (formInput.username.match(/^[A-Za-z]/g)) {
         if (formInput.username.match(/^.{3,18}$/g)) {
-          console.log("username ok");
+          // console.log("username ok");
 
           //check if password meet all requirement
           if (formInput.password.match(/^[\w\d~!@#$%^&*-=+?]+$/g)) {
             if (formInput.password.match(/^.{6,18}$/g)) {
-              console.log("password ok");
+              // console.log("password ok");
               // console.log(password)
               axiosInstance
                 .post("users/register/", formInput)
                 .then((res) => {
-                  console.log(res);
+                  // console.log(res);
                   setCurrentUser(res.data);
                   sessionStorage.setItem("user", JSON.stringify(res.data));
                   axiosInstance
@@ -55,7 +55,7 @@ function SignupForm({
                         password: "",
                       });
                     })
-                    .catch(console.log);
+                    .catch(console.error);
                 })
                 .catch((error) => {
                   console.log(error);

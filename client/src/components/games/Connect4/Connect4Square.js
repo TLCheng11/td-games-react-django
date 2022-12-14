@@ -103,7 +103,7 @@ export default function Connect4Square({
         return;
       }
     }
-    console.log("cant go here");
+    // console.log("cant go here");
   }
 
   return (

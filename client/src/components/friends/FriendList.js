@@ -32,7 +32,7 @@ function FriendList({ friendListPackage }) {
           friend: formInput.toLocaleLowerCase(),
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           showAlert({ type: "winner", message: "invite sent" });
         })
         .then(() => {

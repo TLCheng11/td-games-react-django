@@ -6,7 +6,7 @@ import ProfPicForm from "./ProfPicForm";
 export default function Settings({ showSettingsPackage }) {
   const { currentUser, setShowSettings, showAlert, setCurrentUser } =
     showSettingsPackage;
-  console.log(currentUser);
+  // console.log(currentUser);
 
   const [showProfPicButton, setShowProfPicButton] = useState(true);
 
