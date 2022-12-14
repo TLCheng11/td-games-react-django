@@ -11,9 +11,7 @@ function TicTacToe({ ticTacToePackage }) {
   const [gameSettings, setGameSettings] = useState({ X: [0, ""], O: [0, ""] });
   const [currentSide, setCurrentSide] = useState("");
   const [gameFinished, setGameFinished] = useState(false);
-  const [gameContinue, setGameContinue] = useState(false);
   const [replay, setReplay] = useState(false);
-  const [intervalId, setIntervalId] = useState(0);
   const [ticTacToeSocket, setTicTacToeSocket] = useState({});
 
   const navigate = useNavigate();
@@ -111,8 +109,6 @@ function TicTacToe({ ticTacToePackage }) {
       setGameSettings(JSON.parse(data.match.game_settings));
       if (data.match.finished) {
         setGameFinished(true);
-      } else {
-        setGameContinue(true);
       }
     });
 
@@ -128,77 +124,7 @@ function TicTacToe({ ticTacToePackage }) {
     return () => {
       socket.close();
     };
-
-    // fetch(`${fetchUrl}/tic_tac_toe_match_data?match_id=${matchId}&length=25`)
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     // console.log(data.match.game_status);
-    //     const fetchBoard = JSON.parse(data.match.game_status).board
-    //     if (turn_count(fetchBoard) === 0) {
-    //       setCurrentSide("X");
-    //       setBoard(fetchBoard);
-    //     } else {
-    //       fetchBoard.forEach((v, i) => {
-    //         // console.log(i, v)
-    //         if (v != " ") {
-    //           fieldRefs[i].current.textContent = v;
-    //           v === "X"
-    //             ? (fieldRefs[i].current.style.color = "red")
-    //             : (fieldRefs[i].current.style.color = "blue");
-    //           fieldRefs[i].current.parentNode.style.transform = "rotateY(180deg)";
-    //           fieldRefs[i].current.parentNode.style.pointerEvents = "none";
-    //         }
-    //       })
-    //       setCurrentSide(data.history.player === "X" ? "O" : "X");
-    //       // console.log(fetchBoard)
-    //       setBoard(fetchBoard)
-    //     }
-    //     // console.log(data);
-    //     // console.log(JSON.parse(data.match.game_settings));
-    //     setGameSettings(JSON.parse(data.match.game_settings))
-    //     if (data.match.finished) {
-    //       setGameFinished(true)
-    //     } else {
-    //       setGameContinue(true)
-    //     }
-    //   });
   }, []);
-
-  // get latest game history every second and update the board
-  // useEffect(() => {
-  //   let id = 0
-  //   if (gameContinue) {
-  //     id = setInterval(() => {
-  //       fetch(`${fetchUrl}/tic_tac_toe_match_last_history/${matchId}`)
-  //       .then(res => res.json())
-  //       .then(history => {
-  //         if (history) {
-  //           // console.log(history)
-  //           console.log(board)
-  //           if (board[history.position] != history.player) {
-  //             fieldRefs[history.position].current.textContent = history.player;
-  //             history.player === "X"
-  //               ? (fieldRefs[history.position].current.style.color = "red")
-  //               : (fieldRefs[history.position].current.style.color = "blue");
-  //             fieldRefs[history.position].current.parentNode.style.transform = "rotateY(180deg)";
-  //             fieldRefs[history.position].current.parentNode.style.pointerEvents = "none";
-  //             board[history.position] = history.player
-  //             if (checkWinner(board)) {
-  //               setGameFinished(true)
-  //               setBoard(board)
-  //             } else {
-  //               setCurrentSide(history.player === "X" ? "O" : "X");
-  //               setBoard(board)
-  //             }
-  //           }
-  //         }
-  //       })
-  //     }, 1000)
-  //   }
-  //   setIntervalId(id)
-
-  //   return (() => clearInterval(id))
-  // }, [gameContinue])
 
   // to disable board if not current player
   useEffect(() => {
@@ -211,14 +137,6 @@ function TicTacToe({ ticTacToePackage }) {
     }
   }, [currentSide]);
 
-  useEffect(() => {
-    // if game is finished, no more need to fetching or access to the board
-    if (gameFinished && boardRef) {
-      clearInterval(intervalId);
-      boardRef.current.style.pointerEvents = "none";
-    }
-  }, [gameFinished]);
-
   // replay function
   useEffect(() => {
     let intervalIds = [];
@@ -227,41 +145,39 @@ function TicTacToe({ ticTacToePackage }) {
       fieldRefs.forEach((field) => {
         field.current.parentNode.style.transform = "rotateY(0deg)";
       });
-      fetch(`${fetchUrl}/tic_tac_toe_match_histories/${matchId}`)
-        .then((res) => res.json())
-        .then((histories) => {
-          let timer = 1000;
-          const replayBoard = Array(25).fill(" ");
-          histories.forEach((history) => {
-            intervalIds.push(
-              setTimeout(() => {
-                fieldRefs[history.position].current.textContent =
-                  history.player;
-                history.player === "X"
-                  ? (fieldRefs[history.position].current.style.color = "red")
-                  : (fieldRefs[history.position].current.style.color = "blue");
-                fieldRefs[history.position].current.parentNode.style.transform =
-                  "rotateY(180deg)";
-                fieldRefs[
-                  history.position
-                ].current.parentNode.style.pointerEvents = "none";
-                replayBoard[history.position] = history.player;
-                setCurrentSide(history.player === "X" ? "X" : "O");
-              }, timer)
-            );
-            timer += 2000;
-          });
+      axiosInstance.get(`tictactoe/${matchId}/histories/`).then((res) => {
+        const histories = res.data;
+        let timer = 1000;
+        const replayBoard = Array(25).fill(" ");
+        histories.forEach((history) => {
           intervalIds.push(
             setTimeout(() => {
-              // console.log(replayBoard)
-              if (checkWinner(replayBoard)) {
-                setGameFinished(true);
-                setReplay(false);
-                // console.log("finished")
-              }
-            }, (timer -= 500))
+              fieldRefs[history.position].current.textContent = history.player;
+              history.player === "X"
+                ? (fieldRefs[history.position].current.style.color = "red")
+                : (fieldRefs[history.position].current.style.color = "blue");
+              fieldRefs[history.position].current.parentNode.style.transform =
+                "rotateY(180deg)";
+              fieldRefs[
+                history.position
+              ].current.parentNode.style.pointerEvents = "none";
+              replayBoard[history.position] = history.player;
+              setCurrentSide(history.player === "X" ? "X" : "O");
+            }, timer)
           );
+          timer += 2000;
         });
+        intervalIds.push(
+          setTimeout(() => {
+            // console.log(replayBoard)
+            if (checkWinner(replayBoard)) {
+              setGameFinished(true);
+              setReplay(false);
+              // console.log("finished")
+            }
+          }, (timer -= 500))
+        );
+      });
     }
 
     return () => intervalIds.forEach((id) => clearInterval(id));
@@ -352,7 +268,6 @@ function TicTacToe({ ticTacToePackage }) {
         board[combo[2]] === board[combo[3]]
       ) {
         win = board[combo[0]];
-        clearInterval(intervalId);
         if (gameSettings[win][0] === currentUser.id) {
           if (!gameFinished) {
             setTimeout(() => {
@@ -423,17 +338,6 @@ function TicTacToe({ ticTacToePackage }) {
       // console.log(res.data);
     });
 
-    // fetch(`${fetchUrl}/tic_tac_toe_move`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     // 'Content-Type': 'application/x-www-form-urlencoded',
-    //   },
-    //   body: JSON.stringify(playObj),
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => console.log(data));
-
     e.target.textContent = currentSide;
     currentSide === "X"
       ? (e.target.style.color = "red")
@@ -446,18 +350,6 @@ function TicTacToe({ ticTacToePackage }) {
         .then((res) => {
           // console.log(res.data);
         });
-      // fetch(`${fetchUrl}/tic_tac_toe_finished/${matchId}`, {
-      //   method: "PATCH",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Accept: "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     finished: true,
-      //   }),
-      // })
-      //   .then((res) => res.json())
-      //   .then((data) => console.log(data));
       setGameFinished(true);
     } else {
       setCurrentSide((currentSide) => (currentSide === "X" ? "O" : "X"));
