@@ -44,7 +44,7 @@ export default function Match({
     //   }, 1000)
 
     //   return (() => clearInterval(intervalId))
-  }, []);
+  }, [usermatch]);
 
   function handleAccept() {
     axiosInstance

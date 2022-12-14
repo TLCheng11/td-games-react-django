@@ -110,3 +110,15 @@ def match_detail(request, match_id):
     match.save()
     serializer = MatchSerializer(match)
     return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+# History Controllers
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def history_list(request, match_id):
+
+  if request.method == "GET":
+    histories = Match.objects.get(pk=match_id).tic_tac_toe_histories
+    serializer = TicTacToeMatchHistorySerializer(histories, many=True)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)
