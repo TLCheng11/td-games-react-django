@@ -11,7 +11,6 @@ function FriendList({ friendListPackage }) {
     friendInvites,
     refresh,
     setRefresh,
-    inviteSocket,
     setShowFriends,
     showAlert,
   } = friendListPackage;
@@ -37,9 +36,6 @@ function FriendList({ friendListPackage }) {
         })
         .then(() => {
           setRefresh((state) => !state);
-          inviteSocket.send(
-            JSON.stringify({ payload: formInput.toLocaleLowerCase() })
-          );
           setFormInput("");
         })
         .catch((res) => {
@@ -66,7 +62,6 @@ function FriendList({ friendListPackage }) {
       friend={friend}
       refresh={refresh}
       setRefresh={setRefresh}
-      inviteSocket={inviteSocket}
       showAlert={showAlert}
     />
   ));

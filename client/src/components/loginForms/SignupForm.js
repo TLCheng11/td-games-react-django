@@ -54,6 +54,7 @@ function SignupForm({
                         username: "",
                         password: "",
                       });
+                      setSignupMode(false);
                     })
                     .catch(console.error);
                 })

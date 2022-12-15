@@ -3,14 +3,7 @@ import { fetchUrl } from "../../utilities/GlobalVariables";
 import { axiosInstance } from "../../utilities/axios";
 import "./Invites.css";
 
-function Invites({
-  currentUser,
-  friend,
-  refresh,
-  setRefresh,
-  inviteSocket,
-  showAlert,
-}) {
+function Invites({ currentUser, friend, refresh, setRefresh, showAlert }) {
   const [invite, setInvite] = useState({});
 
   // the get invition status
@@ -28,7 +21,6 @@ function Invites({
       .then((res) => showAlert({ type: "alert", message: res.data.message }))
       .then(() => {
         setRefresh((state) => !state);
-        inviteSocket.send(JSON.stringify({ payload: friend.username }));
       })
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })
@@ -42,7 +34,6 @@ function Invites({
       .then((res) => showAlert({ type: "alert", message: res.data.message }))
       .then(() => {
         setRefresh((state) => !state);
-        inviteSocket.send(JSON.stringify({ payload: friend.username }));
       })
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })
@@ -56,7 +47,6 @@ function Invites({
       .then((res) => showAlert({ type: "winner", message: res.data.message }))
       .then(() => {
         setRefresh((state) => !state);
-        inviteSocket.send(JSON.stringify({ payload: friend.username }));
       })
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })
