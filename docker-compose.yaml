@@ -9,7 +9,7 @@ services:
     volumes:
       - ./api:/home/worker/app
     ports:
-      - "8000:8000"
+      - "8021:8000"
     depends_on:
       - db
 
@@ -21,7 +21,7 @@ services:
     volumes:
       - ./client:/home/node/app
     ports:
-      - "3000:3000"
+      - "3021:3000"
     depends_on:
       - api
 
