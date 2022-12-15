@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { axiosInstance } from "../../utilities/axios";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./ProfPicForm.css";
 
@@ -12,22 +13,13 @@ export default function ProfPicForm({
   const handleSubmit = (evt) => {
     evt.preventDefault();
 
-    let obj = { photo_url: picURL };
+    let obj = { profile_img: picURL };
 
-    fetch(fetchUrl + "/update_prof_pic/" + currentUser.id, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify(obj),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setShowProfPicButton(true);
-        setCurrentUser(data);
-        sessionStorage.setItem("user", JSON.stringify(data));
-      });
+    axiosInstance.patch(`users/update/${currentUser.id}`, obj).then((res) => {
+      setShowProfPicButton(true);
+      setCurrentUser(res.data);
+      sessionStorage.setItem("user", JSON.stringify(res.data));
+    });
   };
 
   return (

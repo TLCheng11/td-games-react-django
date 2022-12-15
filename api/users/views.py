@@ -19,7 +19,7 @@ class UserCreate(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             newUser = serializer.save()
             if newUser:
@@ -58,3 +58,24 @@ class BlacklistTokenUpdateView(APIView):
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+# update user info
+class UserUpdate(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def find_user(self, user_id):
+        try:
+            user = MyUser.objects.get(pk=user_id)
+        except MyUser.DoesNotExist:
+            return False
+        return user
+
+    def patch(self, request, user_id):
+        user = self.find_user(user_id)
+        if not user:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

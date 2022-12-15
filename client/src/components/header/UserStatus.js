@@ -95,7 +95,7 @@ function UserStatus({ loginFormPackage }) {
                 </div>
               ) : null}
             </div>
-            <div id="show-chats" onClick={showSettings}>
+            <div id="show-setting" onClick={showSettings}>
               <p>Settings</p>
             </div>
           </div>
