@@ -60,7 +60,7 @@ export default function AllMatches({
     const friend = obj.users.filter((u) => u.id !== currentUser.id);
     return (
       <Match
-        key={usermatch.id}
+        key={usermatch[0].id}
         gameId={gameId}
         usermatch={usermatch[0]}
         friend={friend[0]}

@@ -129,7 +129,7 @@ export default function Match({
                 {usermatch.status === "finished" ? (
                   <>
                     <p>
-                      <i className>
+                      <i>
                         {usermatch.status.slice(0, 1).toUpperCase()}
                         {usermatch.status.slice(1)}
                       </i>
