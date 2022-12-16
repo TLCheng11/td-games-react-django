@@ -55,8 +55,15 @@ function App() {
   // update user status to logout when websocket disconnect
   useEffect(() => {
     if (currentUser.id) {
+      // localhost Websocket
+      // const socket = new WebSocket(
+      //   "ws://localhost:8021/ws/users/" + currentUser.username + "/"
+      // );
+      // setUserSocket(socket);
+
+      // deployment Websocket
       const socket = new WebSocket(
-        "ws://localhost:8000/ws/users/" + currentUser.username + "/"
+        "ws://54.210.20.214:8021/ws/users/" + currentUser.username + "/"
       );
       setUserSocket(socket);
 

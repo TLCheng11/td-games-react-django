@@ -78,8 +78,19 @@ function TicTacToe({ ticTacToePackage }) {
       }
     });
 
+    // localhost Websocket
+    // const socket = new WebSocket(
+    //   "ws://localhost:8021/ws/tictactoe/" +
+    //     matchId +
+    //     "/" +
+    //     currentUser.username +
+    //     "/"
+    // );
+    // setTicTacToeSocket(socket);
+
+    // deployment Websocket
     const socket = new WebSocket(
-      "ws://localhost:8000/ws/tictactoe/" +
+      "ws://54.210.20.214:8021/ws/tictactoe/" +
         matchId +
         "/" +
         currentUser.username +

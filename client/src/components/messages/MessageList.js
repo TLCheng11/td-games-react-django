@@ -21,8 +21,19 @@ function MessageList({ messageListPackage }) {
 
   // TODO add message websocket
   useEffect(() => {
+    // local Websocket
+    // const socket = new WebSocket(
+    //   "ws://localhost:8021/ws/chats/" +
+    //     chatId +
+    //     "/" +
+    //     currentUser.username +
+    //     "/"
+    // );
+    // setChatWebSocket(socket);
+
+    // deployment Websocket
     const socket = new WebSocket(
-      "ws://localhost:8000/ws/chats/" +
+      "ws://54.210.20.214:8021/ws/chats/" +
         chatId +
         "/" +
         currentUser.username +
