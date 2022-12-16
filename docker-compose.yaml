@@ -5,11 +5,11 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8021"
     volumes:
       - ./api:/home/worker/app
     ports:
-      - "8021:8000"
+      - "8021:8021"
     depends_on:
       - db
 
@@ -17,11 +17,11 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    command: npm start
+    command: npm start --port 3021
     volumes:
       - ./client:/home/node/app
     ports:
-      - "3021:3000"
+      - "3021:3021"
     depends_on:
       - api
 
