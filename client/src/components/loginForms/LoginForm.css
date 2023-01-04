@@ -8,6 +8,12 @@
   z-index: 499;
 }
 
+#form-background {
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #5454c5;
+}
+
 #login-form {
   width: fit-content;
   padding: 20px;
@@ -17,6 +23,10 @@
 .form-title {
   display: flex;
   justify-content: space-between;
+}
+
+.form-title h1 {
+  margin: 5px;
 }
 
 .exit-btn {

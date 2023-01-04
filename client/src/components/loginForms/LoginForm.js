@@ -43,7 +43,7 @@ function LoginForm({ setCurrentUser, setLoginMode, setSignupMode }) {
 
   return (
     <div id="login-form-container">
-      <div>
+      <div id="form-background">
         <div className="form-title">
           <h1>LOGIN: </h1>
           <h1 className="exit-btn" onClick={() => setLoginMode(false)}>

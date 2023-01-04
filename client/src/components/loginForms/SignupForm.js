@@ -104,7 +104,7 @@ function SignupForm({
 
   return (
     <div id="login-form-container">
-      <div>
+      <div id="form-background">
         <div className="form-title">
           <h1>SIGNUP: </h1>
           <h1 className="exit-btn" onClick={() => setSignupMode(false)}>
