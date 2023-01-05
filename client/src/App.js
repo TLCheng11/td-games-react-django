@@ -252,6 +252,7 @@ function App() {
       {loginMode ? (
         <LoginForm
           setCurrentUser={setCurrentUser}
+          showAlert={showAlert}
           setLoginMode={setLoginMode}
           setSignupMode={setSignupMode}
         />

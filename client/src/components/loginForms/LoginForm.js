@@ -2,7 +2,7 @@ import { useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
 import "./LoginForm.css";
 
-function LoginForm({ setCurrentUser, setLoginMode, setSignupMode }) {
+function LoginForm({ setCurrentUser, showAlert, setLoginMode, setSignupMode }) {
   const [formInput, setFormInput] = useState({
     username: "",
     email: "",
@@ -38,7 +38,13 @@ function LoginForm({ setCurrentUser, setLoginMode, setSignupMode }) {
           })
           .catch(console.error);
       })
-      .catch(console.error);
+      .catch((error) => {
+        // console.log(error);
+        showAlert({
+          type: "alert",
+          message: "Wrong username or password",
+        });
+      });
   }
 
   return (
