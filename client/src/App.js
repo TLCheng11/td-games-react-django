@@ -136,7 +136,7 @@ function App() {
       setShowSettings(false);
 
       axiosInstance.get(`/chats/message_unread/`).then((res) => {
-        console.log(res);
+        setUnreadMessages(res.data);
       });
     }
   }, [currentUser]);
@@ -208,6 +208,7 @@ function App() {
     setShowMessages,
     showAlert,
     setShowSettings,
+    unreadMessages,
   };
   const chatListPackage = {
     currentUser,
@@ -219,6 +220,7 @@ function App() {
     setShowMessages,
     showAlert,
     setShowSettings,
+    unreadMessages,
   };
   const messageListPackage = {
     currentUser,
@@ -226,6 +228,7 @@ function App() {
     userFriendOnlineStatus,
     setShowMessages,
     showAlert,
+    unreadMessages,
   };
   const ticTacToePackage = {
     currentUser,

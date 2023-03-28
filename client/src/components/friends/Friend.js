@@ -31,9 +31,9 @@ function Friend({ friend, setRefresh, friendListPackage }) {
     });
   }
 
-  const showUnreadMessages = chat.id
-    ? unreadMessages.filter((message) => message.chat_id === chat.id)
-    : [];
+  const showUnreadMessages = unreadMessages.filter(
+    (message) => message.user.id === friend.id
+  );
 
   return (
     <div className="friend">
