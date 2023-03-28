@@ -1,6 +1,8 @@
 import axios from "axios";
 
-// const baseURL = "http://54.210.20.214:8021/api/";
+// for reference
+// deployed = "http://54.210.20.214:8021/api/";
+// dev = http://localhost:8021/api/
 const baseURL = process.env.REACT_APP_API_URL;
 
 export const axiosInstance = axios.create({
