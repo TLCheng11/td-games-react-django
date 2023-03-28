@@ -89,8 +89,18 @@ function TicTacToe({ ticTacToePackage }) {
     // setTicTacToeSocket(socket);
 
     // deployment Websocket
+    // const socket = new WebSocket(
+    //   "ws://54.210.20.214:8021/ws/tictactoe/" +
+    //     matchId +
+    //     "/" +
+    //     currentUser.username +
+    //     "/"
+    // );
+    // setTicTacToeSocket(socket);
+
     const socket = new WebSocket(
-      "ws://54.210.20.214:8021/ws/tictactoe/" +
+      `${process.env.REACT_APP_WEBSOCKET}` +
+        "tictactoe/" +
         matchId +
         "/" +
         currentUser.username +

@@ -62,8 +62,16 @@ function App() {
       // setUserSocket(socket);
 
       // deployment Websocket
+      // const socket = new WebSocket(
+      //   "ws://54.210.20.214:8021/ws/users/" + currentUser.username + "/"
+      // );
+      // setUserSocket(socket);
+
       const socket = new WebSocket(
-        "ws://54.210.20.214:8021/ws/users/" + currentUser.username + "/"
+        `${process.env.REACT_APP_WEBSOCKET}` +
+          "users/" +
+          currentUser.username +
+          "/"
       );
       setUserSocket(socket);
 

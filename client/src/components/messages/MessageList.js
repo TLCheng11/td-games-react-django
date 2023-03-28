@@ -32,8 +32,18 @@ function MessageList({ messageListPackage }) {
     // setChatWebSocket(socket);
 
     // deployment Websocket
+    // const socket = new WebSocket(
+    //   "ws://54.210.20.214:8021/ws/chats/" +
+    //     chatId +
+    //     "/" +
+    //     currentUser.username +
+    //     "/"
+    // );
+    // setChatWebSocket(socket);
+
     const socket = new WebSocket(
-      "ws://54.210.20.214:8021/ws/chats/" +
+      `${process.env.REACT_APP_WEBSOCKET}` +
+        "chats/" +
         chatId +
         "/" +
         currentUser.username +

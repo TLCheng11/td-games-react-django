@@ -97,9 +97,9 @@ def match_detail(request, match_id):
         )
       
       settings = json.loads(match.game_settings)
-      logger.info(settings)
+      # logger.info(settings)
       for username in [settings["X"][1], settings["O"][1]]:
-        logger.info(username)
+        # logger.info(username)
         update_match_status_through_user_channel(username)
 
       return Response(serializer.data, status=status.HTTP_201_CREATED)
