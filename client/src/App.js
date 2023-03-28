@@ -134,6 +134,10 @@ function App() {
       setShowChats(false);
       setShowMessages(false);
       setShowSettings(false);
+
+      axiosInstance.get(`/chats/message_unread/`).then((res) => {
+        console.log(res);
+      });
     }
   }, [currentUser]);
 

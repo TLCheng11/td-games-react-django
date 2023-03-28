@@ -28,6 +28,7 @@ class Message(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="messages")
   chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name="messages")
   message = models.TextField()
+  read = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 

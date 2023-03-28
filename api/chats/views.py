@@ -10,6 +10,9 @@ from .models import Chat, Message
 from .serializers import ChatSerializer, MessageSerializer
 from users.models import MyUser as User
 
+import logging
+logger = logging.getLogger('django')
+
 # Create your views here.
 # trying the view with sepreate functions
 
@@ -138,3 +141,21 @@ def message_detail(request, id):
     )
     message.delete()
     return Response({"message": "message deleted."}, status=status.HTTP_202_ACCEPTED)
+  
+# Unread Messages
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def message_unread(request):
+
+  # GET chats/messages_unread/
+  # get all unread message related to user
+
+  if request.method == "GET":
+    chats = request.user.chat_set.all()
+    messages = []
+    for chat in chats:
+      messages += chat.messages.all().exclude(user=request.user)
+    serializer = MessageSerializer(messages, many=True)
+          
+
+    return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
