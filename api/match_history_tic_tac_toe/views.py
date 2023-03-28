@@ -11,6 +11,7 @@ from games.models import Match, UserMatch
 from games.serializers import MatchSerializer
 from .serializers import TicTacToeMatchHistorySerializer
 
+import json
 import logging
 logger = logging.getLogger('django')
 
@@ -95,8 +96,9 @@ def match_detail(request, match_id):
           }
         )
       
-      logger.info(match.game_settings["X"][1])
-      for username in [match.game_settings["X"][1], match.game_settings["O"][1]]:
+      settings = json.load(match.game_settings)
+      logger.info(settings)
+      for username in [settings["X"][1], settings["O"][1]]:
         logger.info(username)
         update_match_status_through_user_channel(username)
 
