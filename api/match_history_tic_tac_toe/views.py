@@ -96,7 +96,7 @@ def match_detail(request, match_id):
           }
         )
       
-      settings = json.load(match.game_settings)
+      settings = json.loads(match.game_settings)
       logger.info(settings)
       for username in [settings["X"][1], settings["O"][1]]:
         logger.info(username)
