@@ -94,6 +94,10 @@ def match_detail(request, match_id):
             'new_move': serializer.data,
           }
         )
+      
+      # for username in [match.game_settings["X"], match.game_settings["O"]]:
+      # update_match_status_through_user_channel(request.user.username)
+      logger.info(match.game_settings)
 
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({"errors": "fail to add history"}, status=status.HTTP_406_NOT_ACCEPTABLE)

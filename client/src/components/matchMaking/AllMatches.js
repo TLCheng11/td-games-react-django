@@ -57,7 +57,7 @@ export default function AllMatches({
     const usermatch = obj.user_matches.filter(
       (um) => um.user === currentUser.id
     );
-    const gameStatus = JSON.parse(obj.game_status).board;
+    const gameStatus = obj.game_status ? JSON.parse(obj.game_status).board : [];
     const friend = obj.users.filter((u) => u.id !== currentUser.id);
     return (
       <Match
