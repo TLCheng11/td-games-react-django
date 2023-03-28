@@ -84,7 +84,7 @@ def match_detail(request, match_id):
       match.save()
 
       room_group_name = 'tictactoe_%s' % match.id
-      logger.info(room_group_name)
+      # logger.info(room_group_name)
       channel_layer = get_channel_layer()
       async_to_sync(channel_layer.group_send)(
         room_group_name, 
@@ -95,9 +95,10 @@ def match_detail(request, match_id):
           }
         )
       
-      # for username in [match.game_settings["X"], match.game_settings["O"]]:
-      # update_match_status_through_user_channel(request.user.username)
-      logger.info(match.game_settings)
+      logger.info(match.game_settings["X"][1])
+      for username in [match.game_settings["X"][1], match.game_settings["O"][1]]:
+        logger.info(username)
+        update_match_status_through_user_channel(username)
 
       return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response({"errors": "fail to add history"}, status=status.HTTP_406_NOT_ACCEPTABLE)
