@@ -57,6 +57,7 @@ export default function AllMatches({
     const usermatch = obj.user_matches.filter(
       (um) => um.user === currentUser.id
     );
+    const gameStatus = JSON.parse(obj.game_status).board;
     const friend = obj.users.filter((u) => u.id !== currentUser.id);
     return (
       <Match
@@ -66,10 +67,12 @@ export default function AllMatches({
         friend={friend[0]}
         currentUser={currentUser}
         userFriendOnlineStatus={userFriendOnlineStatus}
+        gameStatus={gameStatus}
       />
     );
   });
 
+  // console.log(allMatches);
   // console.log(MatchesToInclude);
 
   return (

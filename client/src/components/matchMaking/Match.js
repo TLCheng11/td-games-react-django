@@ -9,6 +9,7 @@ export default function Match({
   friend,
   currentUser,
   userFriendOnlineStatus,
+  gameStatus,
 }) {
   const [gameUrl, setGameUrl] = useState("/tictactoe/");
   const [currentMove, setCurrentMove] = useState("");
@@ -20,6 +21,15 @@ export default function Match({
       setGameUrl("/tictactoe/");
     } else if (usermatch.diffculty === "medium") {
       setGameUrl("/tictactoemid/");
+    }
+
+    // determine whose turn the game is on
+    const side = currentUser.id === usermatch.invited_by ? 0 : 1;
+
+    if (gameStatus.filter((empty) => empty === " ").length % 2 === side) {
+      setCurrentMove("Waiting for Opponent");
+    } else {
+      setCurrentMove("Your turn");
     }
 
     // TODO: auto update game status on matches list
