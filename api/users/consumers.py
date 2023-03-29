@@ -51,6 +51,13 @@ class UserConsumer(AsyncWebsocketConsumer):
       'message_id': event['message_id'],
     }))
 
+  # function to add unread message
+  async def add_unread_message(self, event):
+    await self.send(text_data=json.dumps({
+      'action': 'add_unread_message',
+      'message': event['message'],
+    }))
+
   @sync_to_async
   def update_login_status(self, status):
     user = User.objects.get(username=self.room_name)

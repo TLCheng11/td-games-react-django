@@ -98,6 +98,18 @@ def message_list(request, chat_id):
     room_group_name = 'chat_%s' % chat_id
     send_message_through_channel(channel_layer, room_group_name, request, serializer)
 
+    # to add unread message for friend
+    friend = chat.users.all().exclude(id=request.user.id)[0]
+    user_channel_name = 'user_%s' % friend.username
+
+    async_to_sync(channel_layer.group_send)(
+      user_channel_name, 
+      {
+        'type': 'add_unread_message',
+        'message': serializer.data,
+      }
+    )
+
     return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 @api_view(["PATCH", "DELETE"])

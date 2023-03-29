@@ -60,7 +60,7 @@ function MyMessage({
     axiosInstance
       .patch(`chats/message_edit/${message.id}`, { read: true })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
       })
       .catch(console.error);
   }

@@ -113,6 +113,8 @@ function App() {
       }
     } else if (data.action === "update_read_message") {
       setUnreadMessages((m) => m.filter((m) => m.id !== data.message_id));
+    } else if (data.action === "add_unread_message") {
+      setUnreadMessages((m) => [...m, data.message]);
     }
   };
   // ------------------------------------------------------------------------------------------------------------------------
