@@ -13,6 +13,16 @@ from users.models import MyUser as User
 import logging
 logger = logging.getLogger('django')
 
+def send_message_through_channel(channel_layer, room_group_name, request, serializer):
+  async_to_sync(channel_layer.group_send)(
+      room_group_name, 
+      {
+        'type': 'send_message',
+        'method': request.method,
+        'data': serializer.data,
+      }
+    )
+
 # Create your views here.
 # trying the view with sepreate functions
 
@@ -86,14 +96,7 @@ def message_list(request, chat_id):
     # send out the message through chat channel
     channel_layer = get_channel_layer()
     room_group_name = 'chat_%s' % chat_id
-    async_to_sync(channel_layer.group_send)(
-      room_group_name, 
-      {
-        'type': 'send_message',
-        'method': request.method,
-        'data': serializer.data,
-      }
-    )
+    send_message_through_channel(channel_layer, room_group_name, request, serializer)
 
     return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
@@ -120,14 +123,7 @@ def message_detail(request, id):
       if "read" in request.data:
         pass
       else:
-        async_to_sync(channel_layer.group_send)(
-          room_group_name, 
-          {
-            'type': 'send_message',
-            'method': request.method,
-            'data': serializer.data,
-          }
-        )
+        send_message_through_channel(channel_layer, room_group_name, request, serializer)
       
       return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
@@ -135,15 +131,9 @@ def message_detail(request, id):
     
     # send out the message through chat channel
     serializer = MessageSerializer(message)
-    async_to_sync(channel_layer.group_send)(
-      room_group_name, 
-      {
-        'type': 'send_message',
-        'method': request.method,
-        'data': serializer.data,
-      }
-    )
+    send_message_through_channel(channel_layer, room_group_name, request, serializer)
     message.delete()
+
     return Response({"message": "message deleted."}, status=status.HTTP_202_ACCEPTED)
   
 # Unread Messages
