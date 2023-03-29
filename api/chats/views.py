@@ -121,7 +121,16 @@ def message_detail(request, id):
       serializer.save()
 
       if "read" in request.data:
-        pass
+        user_channel_name = 'user_%s' % request.user.username
+        
+        # to update read message for user
+        async_to_sync(channel_layer.group_send)(
+          user_channel_name, 
+          {
+            'type': 'update_read_message',
+            'message_id': message.id
+          }
+        )
       else:
         send_message_through_channel(channel_layer, room_group_name, request, serializer)
       

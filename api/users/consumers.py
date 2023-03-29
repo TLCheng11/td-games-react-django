@@ -44,6 +44,13 @@ class UserConsumer(AsyncWebsocketConsumer):
       'update': True
     }))
 
+  # function to update read message
+  async def update_read_message(self, event):
+    await self.send(text_data=json.dumps({
+      'action': 'update_read_message',
+      'message_id': event['message_id'],
+    }))
+
   @sync_to_async
   def update_login_status(self, status):
     user = User.objects.get(username=self.room_name)

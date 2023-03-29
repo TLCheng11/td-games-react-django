@@ -15,9 +15,8 @@ function MessageList({ messageListPackage }) {
 
   useEffect(() => {
     axiosInstance.get(`chats/messages/${chatId}`).then((res) => {
-      console.log(res.data);
       const messages = res.data.sort((a, b) => a.id - b.id);
-      setMessages(res.data);
+      setMessages(messages);
     });
   }, [refresh]);
 
