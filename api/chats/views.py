@@ -105,8 +105,8 @@ def message_detail(request, id):
   except:
     return Response({"errors": "message not found"}, status=status.HTTP_404_NOT_FOUND)
 
-  if request.user != message.user:
-    return Response({"errors": "only sender can edit message"}, status=status.HTTP_403_FORBIDDEN)
+  # if request.user != message.user:
+  #   return Response({"errors": "only sender can edit message"}, status=status.HTTP_403_FORBIDDEN)
 
   channel_layer = get_channel_layer()
   room_group_name = 'chat_%s' % message.chat.id
@@ -117,14 +117,18 @@ def message_detail(request, id):
     if serializer.is_valid():
       serializer.save()
 
-      async_to_sync(channel_layer.group_send)(
-        room_group_name, 
-        {
-          'type': 'send_message',
-          'method': request.method,
-          'data': serializer.data,
-        }
-      )
+      if "read" in request.data:
+        pass
+      else:
+        async_to_sync(channel_layer.group_send)(
+          room_group_name, 
+          {
+            'type': 'send_message',
+            'method': request.method,
+            'data': serializer.data,
+          }
+        )
+      
       return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
   if request.method == "DELETE":
@@ -154,7 +158,7 @@ def message_unread(request):
     chats = request.user.chat_set.all()
     messages = []
     for chat in chats:
-      messages += chat.messages.all().exclude(user=request.user)
+      messages += chat.messages.all().exclude(user=request.user).filter(read=False)
     serializer = MessageSerializer(messages, many=True)
           
 

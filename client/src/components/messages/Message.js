@@ -22,18 +22,9 @@ function MyMessage({
     : { backgroundColor: "red" };
 
   useEffect(() => {
-    // if (!message.read && message.user_id != currentUser.id) {
-    //   fetch(`${fetchUrl}/messages/${message.id}`, {
-    //     method: "PATCH",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Accept: "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       read: true,
-    //     }),
-    //   }).catch(console.error);
-    // }
+    if (!message.read && message.user.id !== currentUser.id) {
+      updateUnreadMessage();
+    }
   }, []);
 
   useEffect(() => {
@@ -61,6 +52,15 @@ function MyMessage({
       .then((res) => {
         // console.log(res.data.message);
         setRefresh((state) => !state);
+      })
+      .catch(console.error);
+  }
+
+  function updateUnreadMessage() {
+    axiosInstance
+      .patch(`chats/message_edit/${message.id}`, { read: true })
+      .then((res) => {
+        console.log(res);
       })
       .catch(console.error);
   }
