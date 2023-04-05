@@ -296,10 +296,7 @@ function App() {
             path="/match-making/:game_id"
             element={
               currentUser.id ? (
-                <MatchMaking
-                  userSocket={userSocket}
-                  userFriendOnlineStatus={userFriendOnlineStatus}
-                />
+                <MatchMaking userSocket={userSocket} />
               ) : (
                 <h1>Login to Play Game</h1>
               )

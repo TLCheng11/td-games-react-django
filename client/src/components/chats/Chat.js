@@ -1,15 +1,12 @@
+import { useContext } from "react";
 import "./Chat.css";
+import { UserContext } from "../../contexts/UserContext";
 
 function Chat({ chat, chatListPackage }) {
+  const { unreadMessages, userFriendOnlineStatus } = useContext(UserContext);
   const { id } = chat;
-  const {
-    setChatId,
-    unreadMessages,
-    userFriendOnlineStatus,
-    setShowFriends,
-    setShowChats,
-    setShowMessages,
-  } = chatListPackage;
+  const { setChatId, setShowFriends, setShowChats, setShowMessages } =
+    chatListPackage;
 
   function goToChat() {
     setChatId(id);

@@ -6,7 +6,7 @@ import { axiosInstance } from "../../utilities/axios";
 import { UserContext } from "../../contexts/UserContext";
 
 function MessageList({ messageListPackage }) {
-  const { currentUser, userFriendOnlineStatus } = useContext(UserContext);
+  const { currentUser } = useContext(UserContext);
   const { chatId, setShowMessages } = messageListPackage;
   const [formInput, setFormInput] = useState("");
   const [messages, setMessages] = useState([]);

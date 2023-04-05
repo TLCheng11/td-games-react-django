@@ -5,11 +5,7 @@ import { axiosInstance } from "../../utilities/axios";
 import Match from "./Match";
 import { UserContext } from "../../contexts/UserContext";
 
-export default function AllMatches({
-  userSocket,
-  gameId,
-  userFriendOnlineStatus,
-}) {
+export default function AllMatches({ userSocket, gameId }) {
   const { currentUser } = useContext(UserContext);
   const [allMatches, setAllMatches] = useState([]);
   const [refresh, setRefresh] = useState(false);
