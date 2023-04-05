@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { fetchUrl } from "./utilities/GlobalVariables";
 import { axiosInstance } from "./utilities/axios";
@@ -20,11 +20,24 @@ import WinLossMessage from "./utilities/WinLoseMessage";
 import Connect4 from "./components/games/Connect4/Connect4";
 import LoginForm from "./components/loginForms/LoginForm";
 import SignupForm from "./components/loginForms/SignupForm";
+import { UserContext } from "./contexts/UserContext";
 
 function App() {
+  const {
+    currentUser,
+    setCurrentUser,
+    userSocket,
+    userFriendOnlineStatus,
+    setUserFriendOnlineStatus,
+    unreadMessages,
+    setUnreadMessages,
+    refresh,
+    setRefresh,
+  } = useContext(UserContext);
+
   const [firstEnter, setFirstEnter] = useState(true);
   const [introStyle, setIntroStyle] = useState({ opacity: "1" });
-  const [currentUser, setCurrentUser] = useState({});
+  // const [currentUser, setCurrentUser] = useState({});
   const [showFriends, setShowFriends] = useState(false);
   const [showChats, setShowChats] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
@@ -36,42 +49,64 @@ function App() {
   const [onWinLose, setonWinLose] = useState(false);
   const [winLose, setwinLose] = useState({ type: "win", message: "You Win!" });
   const [chatId, setChatId] = useState("");
-  const [unreadMessages, setUnreadMessages] = useState([]);
+  // const [unreadMessages, setUnreadMessages] = useState([]);
 
   const timeOutIds = [];
 
   // for friend list
   const [userFriends, setUserFriends] = useState([]);
-  const [userFriendOnlineStatus, setUserFriendOnlineStatus] = useState({});
+  // const [userFriendOnlineStatus, setUserFriendOnlineStatus] = useState({});
   const [friendInvites, setFriendInvites] = useState([]);
   // use to refetch friend list info
-  const [refresh, setRefresh] = useState(true);
+  // const [refresh, setRefresh] = useState(true);
 
   // ---------------------------------------- User Websocket ----------------------------------------
   // state to hold user websocket instance
-  const [userSocket, setUserSocket] = useState({});
+  // const [userSocket, setUserSocket] = useState({});
 
   // create a websocket when user login
   // update user status to logout when websocket disconnect
-  useEffect(() => {
-    if (currentUser.id) {
-      // for reference
-      // deployed: ws://54.210.20.214:8021/ws/users/
-      // dev: ws://localhost:8021/ws/users/
+  // useEffect(() => {
+  //   if (currentUser.id) {
+  //     // for reference
+  //     // deployed: ws://54.210.20.214:8021/ws/users/
+  //     // dev: ws://localhost:8021/ws/users/
 
-      const socket = new WebSocket(
-        `${process.env.REACT_APP_WEBSOCKET}` +
-          "users/" +
-          currentUser.username +
-          "/"
-      );
-      setUserSocket(socket);
+  //     const socket = new WebSocket(
+  //       `${process.env.REACT_APP_WEBSOCKET}` +
+  //         "users/" +
+  //         currentUser.username +
+  //         "/"
+  //     );
 
-      return () => {
-        socket.close();
-      };
-    }
-  }, [currentUser]);
+  //     // setup responds for different userSocket action
+  //     socket.onmessage = function (e) {
+  //       const data = JSON.parse(e.data);
+  //       if (data.action === "friend_login_or_logout") {
+  //         setUserFriendOnlineStatus({
+  //           ...userFriendOnlineStatus,
+  //           [data.username]: data.is_login,
+  //         });
+  //       } else if (data.action === "friend_invite") {
+  //         // TODO
+  //         // can update the friendlist and friend invite list base on data instead of refresh the fetch
+  //         if (data.update) {
+  //           setRefresh((state) => !state);
+  //         }
+  //       } else if (data.action === "update_read_message") {
+  //         setUnreadMessages((m) => m.filter((m) => m.id !== data.message_id));
+  //       } else if (data.action === "add_unread_message") {
+  //         setUnreadMessages((m) => [...m, data.message]);
+  //       }
+  //     };
+
+  //     setUserSocket(socket);
+
+  //     return () => {
+  //       socket.close();
+  //     };
+  //   }
+  // }, [currentUser]);
   // ------------------------------------------------------------------------------------------------------------------------
 
   // ---------------------------------------- Friendlist ----------------------------------------
@@ -97,26 +132,6 @@ function App() {
     }
   }, [currentUser, refresh]);
 
-  // setup responds for different userSocket action
-  userSocket.onmessage = function (e) {
-    const data = JSON.parse(e.data);
-    if (data.action === "friend_login_or_logout") {
-      setUserFriendOnlineStatus({
-        ...userFriendOnlineStatus,
-        [data.username]: data.is_login,
-      });
-    } else if (data.action === "friend_invite") {
-      // TODO
-      // can update the friendlist and friend invite list base on data instead of refresh the fetch
-      if (data.update) {
-        setRefresh((state) => !state);
-      }
-    } else if (data.action === "update_read_message") {
-      setUnreadMessages((m) => m.filter((m) => m.id !== data.message_id));
-    } else if (data.action === "add_unread_message") {
-      setUnreadMessages((m) => [...m, data.message]);
-    }
-  };
   // ------------------------------------------------------------------------------------------------------------------------
 
   // check if session saved user
