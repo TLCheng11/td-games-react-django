@@ -1,26 +1,22 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
 import Friend from "./Friend";
 import "./FriendList.css";
 import Invites from "./Invites";
+import { UserContext } from "../../contexts/UserContext";
 
 function FriendList({ friendListPackage }) {
-  const {
-    currentUser,
-    userFriends,
-    friendInvites,
-    refresh,
-    setRefresh,
-    setShowFriends,
-    showAlert,
-  } = friendListPackage;
+  const { currentUser, setFriendListRefresh } = useContext(UserContext);
+
+  const { userFriends, friendInvites, setShowFriends, showAlert } =
+    friendListPackage;
 
   const [inviteMode, setInviteMode] = useState(false);
   const [formInput, setFormInput] = useState("");
 
   // to update friend list
   useEffect(() => {
-    setRefresh((state) => !state);
+    setFriendListRefresh((state) => !state);
   }, []);
 
   function addFriend(e) {
@@ -35,7 +31,7 @@ function FriendList({ friendListPackage }) {
           showAlert({ type: "winner", message: "invite sent" });
         })
         .then(() => {
-          setRefresh((state) => !state);
+          setFriendListRefresh((state) => !state);
           setFormInput("");
         })
         .catch((res) => {
@@ -56,14 +52,7 @@ function FriendList({ friendListPackage }) {
   ));
 
   const showInvites = friendInvites.map((friend) => (
-    <Invites
-      key={friend.id}
-      currentUser={currentUser}
-      friend={friend}
-      refresh={refresh}
-      setRefresh={setRefresh}
-      showAlert={showAlert}
-    />
+    <Invites key={friend.id} friend={friend} showAlert={showAlert} />
   ));
 
   return (

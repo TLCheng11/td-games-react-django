@@ -1,18 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./Friend.css";
+import { UserContext } from "../../contexts/UserContext";
 
-function Friend({ friend, setRefresh, friendListPackage }) {
-  const {
-    currentUser,
-    userFriendOnlineStatus,
-    unreadMessages,
-    setChatId,
-    setShowFriends,
-    setShowChats,
-    setShowMessages,
-  } = friendListPackage;
+function Friend({ friend, friendListPackage }) {
+  const { userFriendOnlineStatus, unreadMessages } = useContext(UserContext);
+
+  const { setChatId, setShowFriends, setShowChats, setShowMessages } =
+    friendListPackage;
   const [chat, setChat] = useState({});
 
   const Img = friend.profile_img

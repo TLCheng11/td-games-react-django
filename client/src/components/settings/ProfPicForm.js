@@ -1,13 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./ProfPicForm.css";
+import { UserContext } from "../../contexts/UserContext";
 
-export default function ProfPicForm({
-  setShowProfPicButton,
-  currentUser,
-  setCurrentUser,
-}) {
+export default function ProfPicForm({ setShowProfPicButton }) {
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const [picURL, setPicURL] = useState("");
 
   const handleSubmit = (evt) => {

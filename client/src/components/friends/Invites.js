@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import { axiosInstance } from "../../utilities/axios";
 import "./Invites.css";
+import { UserContext } from "../../contexts/UserContext";
 
-function Invites({ currentUser, friend, refresh, setRefresh, showAlert }) {
+function Invites({ friend, refresh, setRefresh, showAlert }) {
+  const { currentUser } = useContext(UserContext);
+
   const [invite, setInvite] = useState({});
 
   // the get invition status

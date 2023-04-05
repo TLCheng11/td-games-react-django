@@ -1,15 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import { useState, useEffect } from "react";
 import "./MatchFriend.css";
 import { axiosInstance } from "../../utilities/axios";
+import { UserContext } from "../../contexts/UserContext";
 
-export default function MatchFriend({
-  friend,
-  currentUser,
-  gameId,
-  userFriendOnlineStatus,
-}) {
+export default function MatchFriend({ friend, gameId }) {
+  const { currentUser, userFriendOnlineStatus } = useContext(UserContext);
   const [diffculty, setDiffculty] = useState("normal");
   const [invited, setInvited] = useState(false);
 

@@ -1,12 +1,13 @@
 import "./MessageList.css";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import Message from "./Message";
 import { axiosInstance } from "../../utilities/axios";
+import { UserContext } from "../../contexts/UserContext";
 
 function MessageList({ messageListPackage }) {
-  const { currentUser, chatId, setShowMessages, userFriendOnlineStatus } =
-    messageListPackage;
+  const { currentUser, userFriendOnlineStatus } = useContext(UserContext);
+  const { chatId, setShowMessages } = messageListPackage;
   const [formInput, setFormInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [usersStatus, setUsersStatus] = useState({});
@@ -39,13 +40,7 @@ function MessageList({ messageListPackage }) {
 
   const showMessages = messages.map((message) => {
     return (
-      <Message
-        key={message.id}
-        currentUser={currentUser}
-        message={message}
-        userFriendOnlineStatus={userFriendOnlineStatus}
-        setRefresh={setRefresh}
-      />
+      <Message key={message.id} message={message} setRefresh={setRefresh} />
     );
   });
 

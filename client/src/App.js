@@ -27,12 +27,13 @@ function App() {
     currentUser,
     setCurrentUser,
     userSocket,
+    setUserSocket,
     userFriendOnlineStatus,
     setUserFriendOnlineStatus,
     unreadMessages,
     setUnreadMessages,
-    refresh,
-    setRefresh,
+    friendListRefresh,
+    setFriendListRefresh,
   } = useContext(UserContext);
 
   const [firstEnter, setFirstEnter] = useState(true);
@@ -130,7 +131,7 @@ function App() {
       setUserFriendOnlineStatus({});
       setFriendInvites([]);
     }
-  }, [currentUser, refresh]);
+  }, [currentUser, friendListRefresh]);
 
   // ------------------------------------------------------------------------------------------------------------------------
 
@@ -202,9 +203,6 @@ function App() {
 
   // packages for all states and functions to carry down to children
   const loginFormPackage = {
-    currentUser,
-    unreadMessages,
-    setCurrentUser,
     setLoginMode,
     setSignupMode,
     setShowFriends,
@@ -213,58 +211,42 @@ function App() {
     showAlert,
     setShowSettings,
   };
+
   const friendListPackage = {
-    currentUser,
-    unreadMessages,
     userFriends,
-    userFriendOnlineStatus,
     friendInvites,
-    refresh,
-    setRefresh,
     setChatId,
     setShowFriends,
     setShowChats,
     setShowMessages,
     showAlert,
     setShowSettings,
-    unreadMessages,
   };
+
   const chatListPackage = {
-    currentUser,
-    unreadMessages,
-    userFriendOnlineStatus,
     setChatId,
     setShowFriends,
     setShowChats,
     setShowMessages,
     showAlert,
     setShowSettings,
-    unreadMessages,
   };
+
   const messageListPackage = {
-    currentUser,
     chatId,
-    userFriendOnlineStatus,
     setShowMessages,
     showAlert,
-    unreadMessages,
   };
+
   const ticTacToePackage = {
-    currentUser,
     showWinLose,
   };
 
   const showSettingsPackage = {
-    currentUser,
     setShowFriends,
     setShowChats,
     setShowMessages,
     setShowSettings,
-    setCurrentUser,
-  };
-
-  const matchMakingPackage = {
-    currentUser,
   };
 
   return (
@@ -277,7 +259,6 @@ function App() {
       {onAlert ? <AlertBox setOnAlert={setOnAlert} alert={alert} /> : null}
       {loginMode ? (
         <LoginForm
-          setCurrentUser={setCurrentUser}
           showAlert={showAlert}
           setLoginMode={setLoginMode}
           setSignupMode={setSignupMode}
@@ -285,7 +266,6 @@ function App() {
       ) : null}
       {signupMode ? (
         <SignupForm
-          setCurrentUser={setCurrentUser}
           showAlert={showAlert}
           setLoginMode={setLoginMode}
           setSignupMode={setSignupMode}
@@ -318,7 +298,6 @@ function App() {
               currentUser.id ? (
                 <MatchMaking
                   userSocket={userSocket}
-                  currentUser={currentUser}
                   userFriendOnlineStatus={userFriendOnlineStatus}
                 />
               ) : (

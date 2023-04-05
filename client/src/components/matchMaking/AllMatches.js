@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./AllMatches.css";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
 import Match from "./Match";
+import { UserContext } from "../../contexts/UserContext";
 
 export default function AllMatches({
   userSocket,
-  currentUser,
   gameId,
   userFriendOnlineStatus,
 }) {
+  const { currentUser } = useContext(UserContext);
   const [allMatches, setAllMatches] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
@@ -67,8 +68,6 @@ export default function AllMatches({
         gameId={gameId}
         usermatch={usermatch[0]}
         friend={friend[0]}
-        currentUser={currentUser}
-        userFriendOnlineStatus={userFriendOnlineStatus}
         gameStatus={gameStatus}
       />
     );

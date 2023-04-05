@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./ChatList.css";
 import Chat from "./Chat";
 import { axiosInstance } from "../../utilities/axios";
+import { UserContext } from "../../contexts/UserContext";
 
 function ChatList({ chatListPackage }) {
-  const { currentUser, setShowChats } = chatListPackage;
+  const { currentUser } = useContext(UserContext);
+
+  const { setShowChats } = chatListPackage;
   const [userChats, setUserChats] = useState([]);
 
   // TODO: track unread message

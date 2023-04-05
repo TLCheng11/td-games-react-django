@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./Settings.css";
 import { useState } from "react";
 import ProfPicForm from "./ProfPicForm";
+import { UserContext } from "../../contexts/UserContext";
 
 export default function Settings({ showSettingsPackage }) {
-  const { currentUser, setShowSettings, showAlert, setCurrentUser } =
-    showSettingsPackage;
+  const { currentUser } = useContext(UserContext);
+  const { setShowSettings, showAlert } = showSettingsPackage;
   // console.log(currentUser);
 
   const [showProfPicButton, setShowProfPicButton] = useState(true);
@@ -34,11 +35,7 @@ export default function Settings({ showSettingsPackage }) {
             Change Profile Picture
           </button>
         ) : (
-          <ProfPicForm
-            currentUser={currentUser}
-            setShowProfPicButton={setShowProfPicButton}
-            setCurrentUser={setCurrentUser}
-          />
+          <ProfPicForm setShowProfPicButton={setShowProfPicButton} />
         )}
       </div>
     </div>

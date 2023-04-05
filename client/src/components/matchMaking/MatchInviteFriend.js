@@ -1,15 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
 import "./MatchInviteFriend.css";
 import MatchFriend from "./MatchFriend";
+import { UserContext } from "../../contexts/UserContext";
 
-export default function MatchInviteFriend({
-  currentUser,
-  setShowInvite,
-  gameId,
-  userFriendOnlineStatus,
-}) {
+export default function MatchInviteFriend({ setShowInvite, gameId }) {
+  const { currentUser } = useContext(UserContext);
   const [userFriends, setUserFriends] = useState([]);
 
   useEffect(() => {
@@ -19,15 +16,7 @@ export default function MatchInviteFriend({
   }, []);
 
   const showFriends = userFriends.map((friend) => {
-    return (
-      <MatchFriend
-        key={friend.id}
-        friend={friend}
-        currentUser={currentUser}
-        gameId={gameId}
-        userFriendOnlineStatus={userFriendOnlineStatus}
-      />
-    );
+    return <MatchFriend key={friend.id} friend={friend} gameId={gameId} />;
   });
 
   return (

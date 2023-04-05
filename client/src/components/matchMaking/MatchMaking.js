@@ -6,11 +6,7 @@ import { axiosInstance } from "../../utilities/axios";
 import MatchInviteFriend from "./MatchInviteFriend";
 import AllMatches from "./AllMatches";
 
-export default function MatchMaking({
-  userSocket,
-  currentUser,
-  userFriendOnlineStatus,
-}) {
+export default function MatchMaking({ userSocket }) {
   let location = useLocation();
 
   const gameId = location.pathname.substring(
@@ -26,12 +22,7 @@ export default function MatchMaking({
 
   return (
     <div className="matchmaking-container">
-      <AllMatches
-        userSocket={userSocket}
-        currentUser={currentUser}
-        gameId={gameId}
-        userFriendOnlineStatus={userFriendOnlineStatus}
-      />
+      <AllMatches userSocket={userSocket} gameId={gameId} />
       <div className="friend-invite-container">
         <button
           className="button-49"
@@ -46,12 +37,7 @@ export default function MatchMaking({
         </button>
 
         {showInvite ? (
-          <MatchInviteFriend
-            currentUser={currentUser}
-            gameId={gameId}
-            userFriendOnlineStatus={userFriendOnlineStatus}
-            setShowInvite={setShowInvite}
-          />
+          <MatchInviteFriend gameId={gameId} setShowInvite={setShowInvite} />
         ) : (
           <></>
         )}

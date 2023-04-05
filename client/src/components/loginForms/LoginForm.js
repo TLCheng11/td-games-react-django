@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
 import "./LoginForm.css";
+import { UserContext } from "../../contexts/UserContext";
 
-function LoginForm({ setCurrentUser, showAlert, setLoginMode, setSignupMode }) {
+function LoginForm({ showAlert, setLoginMode, setSignupMode }) {
+  const { setCurrentUser } = useContext(UserContext);
+
   const [formInput, setFormInput] = useState({
     username: "",
     email: "",

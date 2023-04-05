@@ -7,7 +7,7 @@ export function UserProvider({ children }) {
   const [userSocket, setUserSocket] = useState({});
   const [userFriendOnlineStatus, setUserFriendOnlineStatus] = useState({});
   const [unreadMessages, setUnreadMessages] = useState([]);
-  const [refresh, setRefresh] = useState(true);
+  const [friendListRefresh, setFriendListRefresh] = useState(true);
 
   // create a websocket when user login
   // update user status to logout when websocket disconnect
@@ -36,7 +36,7 @@ export function UserProvider({ children }) {
           // TODO
           // can update the friendlist and friend invite list base on data instead of refresh the fetch
           if (data.update) {
-            setRefresh((state) => !state);
+            setFriendListRefresh((state) => !state);
           }
         } else if (data.action === "update_read_message") {
           setUnreadMessages((m) => m.filter((m) => m.id !== data.message_id));
@@ -58,12 +58,14 @@ export function UserProvider({ children }) {
       value={{
         currentUser,
         setCurrentUser,
+        userSocket,
+        setUserSocket,
         userFriendOnlineStatus,
         setUserFriendOnlineStatus,
         unreadMessages,
         setUnreadMessages,
-        refresh,
-        setRefresh,
+        friendListRefresh,
+        setFriendListRefresh,
       }}
     >
       {children}

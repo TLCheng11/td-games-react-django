@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Match.css";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../utilities/axios";
+import { UserContext } from "../../contexts/UserContext";
 
-export default function Match({
-  gameId,
-  usermatch,
-  friend,
-  currentUser,
-  userFriendOnlineStatus,
-  gameStatus,
-}) {
+export default function Match({ gameId, usermatch, friend, gameStatus }) {
+  const { currentUser, userFriendOnlineStatus } = useContext(UserContext);
   const [gameUrl, setGameUrl] = useState("/tictactoe/");
   const [currentMove, setCurrentMove] = useState("");
 
