@@ -36,6 +36,8 @@ function App() {
     setFriendListRefresh,
   } = useContext(UserContext);
 
+  console.log(currentUser);
+
   const [firstEnter, setFirstEnter] = useState(true);
   const [introStyle, setIntroStyle] = useState({ opacity: "1" });
   // const [currentUser, setCurrentUser] = useState({});
@@ -295,11 +297,7 @@ function App() {
           <Route
             path="/match-making/:game_id"
             element={
-              currentUser.id ? (
-                <MatchMaking userSocket={userSocket} />
-              ) : (
-                <h1>Login to Play Game</h1>
-              )
+              currentUser.id ? <MatchMaking /> : <h1>Login to Play Game</h1>
             }
           ></Route>
           <Route

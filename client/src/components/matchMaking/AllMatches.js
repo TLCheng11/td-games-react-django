@@ -5,21 +5,13 @@ import { axiosInstance } from "../../utilities/axios";
 import Match from "./Match";
 import { UserContext } from "../../contexts/UserContext";
 
-export default function AllMatches({ userSocket, gameId }) {
-  const { currentUser } = useContext(UserContext);
+export default function AllMatches({ gameId }) {
+  const { currentUser, matchListRefresh } = useContext(UserContext);
   const [allMatches, setAllMatches] = useState([]);
-  const [matchListRefresh, setMatchListRefresh] = useState(false);
 
   useEffect(() => {
     getMatches();
   }, [matchListRefresh]);
-
-  userSocket.onmessage = function (e) {
-    const data = JSON.parse(e.data);
-    if (data.action === "match_status_update") {
-      setMatchListRefresh((state) => !state);
-    }
-  };
 
   function getMatches() {
     axiosInstance.get(`games/${gameId}/matches/`).then((res) => {

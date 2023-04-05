@@ -8,6 +8,7 @@ export function UserProvider({ children }) {
   const [userFriendOnlineStatus, setUserFriendOnlineStatus] = useState({});
   const [unreadMessages, setUnreadMessages] = useState([]);
   const [friendListRefresh, setFriendListRefresh] = useState(true);
+  const [matchListRefresh, setMatchListRefresh] = useState(true);
 
   // create a websocket when user login
   // update user status to logout when websocket disconnect
@@ -42,6 +43,8 @@ export function UserProvider({ children }) {
           setUnreadMessages((m) => m.filter((m) => m.id !== data.message_id));
         } else if (data.action === "add_unread_message") {
           setUnreadMessages((m) => [...m, data.message]);
+        } else if (data.action === "match_status_update") {
+          setMatchListRefresh((state) => !state);
         }
       };
 
@@ -66,6 +69,8 @@ export function UserProvider({ children }) {
         setUnreadMessages,
         friendListRefresh,
         setFriendListRefresh,
+        matchListRefresh,
+        setMatchListRefresh,
       }}
     >
       {children}

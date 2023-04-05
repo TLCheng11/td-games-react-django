@@ -6,7 +6,7 @@ import { axiosInstance } from "../../utilities/axios";
 import MatchInviteFriend from "./MatchInviteFriend";
 import AllMatches from "./AllMatches";
 
-export default function MatchMaking({ userSocket }) {
+export default function MatchMaking() {
   let location = useLocation();
 
   const gameId = location.pathname.substring(
@@ -22,7 +22,7 @@ export default function MatchMaking({ userSocket }) {
 
   return (
     <div className="matchmaking-container">
-      <AllMatches userSocket={userSocket} gameId={gameId} />
+      <AllMatches gameId={gameId} />
       <div className="friend-invite-container">
         <button
           className="button-49"
