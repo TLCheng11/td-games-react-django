@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { axiosInstance } from "../../utilities/axios";
-import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./Friend.css";
 import { UserContext } from "../../contexts/UserContext";
 
@@ -9,7 +8,6 @@ function Friend({ friend, friendListPackage }) {
 
   const { setChatId, setShowFriends, setShowChats, setShowMessages } =
     friendListPackage;
-  const [chat, setChat] = useState({});
 
   const Img = friend.profile_img
     ? friend.profile_img

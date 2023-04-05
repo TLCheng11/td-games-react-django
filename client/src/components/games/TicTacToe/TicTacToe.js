@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { useState, useEffect, useRef } from "react";
 import styles from "./TicTacToe.module.css";
-import { fetchUrl } from "../../../utilities/GlobalVariables";
 import { useLocation, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../../utilities/axios";
 import { UserContext } from "../../../contexts/UserContext";

@@ -1,6 +1,5 @@
 import "./MessageList.css";
 import { useContext, useEffect, useRef, useState } from "react";
-import { fetchUrl } from "../../utilities/GlobalVariables";
 import Message from "./Message";
 import { axiosInstance } from "../../utilities/axios";
 import { UserContext } from "../../contexts/UserContext";
@@ -10,7 +9,6 @@ function MessageList({ messageListPackage }) {
   const { chatId, setShowMessages } = messageListPackage;
   const [formInput, setFormInput] = useState("");
   const [messages, setMessages] = useState([]);
-  const [usersStatus, setUsersStatus] = useState({});
   const [messageListRefresh, setMessageListRefresh] = useState(false);
   const [chatWebSocket, setChatWebSocket] = useState({});
 

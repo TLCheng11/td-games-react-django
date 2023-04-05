@@ -26,29 +26,6 @@ export default function Match({ gameId, usermatch, friend, gameStatus }) {
     } else {
       setCurrentMove("Your turn");
     }
-
-    // TODO: auto update game status on matches list
-    //   const intervalId = setInterval(() => {
-    //     fetch(`${fetchUrl}/tic_tac_toe_match_last_history/${usermatch.match_id}`)
-    //     .then(res => res.json())
-    //     .then(history => {
-    //       if (history) {
-    //         if (history.user_id !== currentUser.id) {
-    //           setCurrentMove("Your turn!")
-    //         } else {
-    //           setCurrentMove("Waiting for opponent move...")
-    //         }
-    //       } else {
-    //         if (usermatch.invited_by === currentUser.id) {
-    //           setCurrentMove("Your turn!")
-    //         } else {
-    //           setCurrentMove("Waiting for opponent move...")
-    //         }
-    //       }
-    //     })
-    //   }, 1000)
-
-    //   return (() => clearInterval(intervalId))
   }, [usermatch]);
 
   function handleAccept() {

@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./ChatList.css";
 import Chat from "./Chat";
 import { axiosInstance } from "../../utilities/axios";
@@ -10,24 +9,6 @@ function ChatList({ chatListPackage }) {
 
   const { setShowChats } = chatListPackage;
   const [userChats, setUserChats] = useState([]);
-
-  // TODO: track unread message
-  // useEffect(() => {
-  //   fetch(`${fetchUrl}/chats/${currentUser.id}`)
-  //     .then(res => res.json())
-  //     .then(setUserChats)
-
-  //   // keep checking friends online status
-  //   const intervalId = setInterval(() => {
-  //     fetch(`${fetchUrl}/chats/${currentUser.id}`)
-  //     .then(res => res.json())
-  //     .then(setUserChats)
-  //   }, 2000)
-
-  //   return (() => {
-  //     clearInterval(intervalId)
-  //   })
-  // }, [])
 
   useEffect(() => {
     axiosInstance.get(`chats/`).then((res) => {

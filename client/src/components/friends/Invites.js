@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { fetchUrl } from "../../utilities/GlobalVariables";
 import { axiosInstance } from "../../utilities/axios";
 import "./Invites.css";
 import { UserContext } from "../../contexts/UserContext";

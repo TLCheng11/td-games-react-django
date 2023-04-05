@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { fetchUrl } from "../../utilities/GlobalVariables";
 import { useState, useEffect } from "react";
 import "./MatchFriend.css";
 import { axiosInstance } from "../../utilities/axios";
