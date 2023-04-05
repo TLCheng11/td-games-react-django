@@ -8,16 +8,16 @@ import { UserContext } from "../../contexts/UserContext";
 export default function AllMatches({ userSocket, gameId }) {
   const { currentUser } = useContext(UserContext);
   const [allMatches, setAllMatches] = useState([]);
-  const [refresh, setRefresh] = useState(false);
+  const [matchListRefresh, setMatchListRefresh] = useState(false);
 
   useEffect(() => {
     getMatches();
-  }, [refresh]);
+  }, [matchListRefresh]);
 
   userSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
     if (data.action === "match_status_update") {
-      setRefresh((state) => !state);
+      setMatchListRefresh((state) => !state);
     }
   };
 

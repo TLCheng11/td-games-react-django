@@ -4,7 +4,7 @@ import { fetchUrl } from "../../utilities/GlobalVariables";
 import "./Message.css";
 import { UserContext } from "../../contexts/UserContext";
 
-function MyMessage({ message, setRefresh }) {
+function MyMessage({ message, setMessageListRefresh }) {
   const { currentUser, userFriendOnlineStatus } = useContext(UserContext);
   const { user: sender } = message;
   const [style, setStyle] = useState({ flexDirection: "row" });
@@ -38,7 +38,7 @@ function MyMessage({ message, setRefresh }) {
       .patch(`chats/message_edit/${message.id}`, { message: editFromInput })
       .then((res) => {
         setEditMode(false);
-        setRefresh((state) => !state);
+        setMessageListRefresh((state) => !state);
       })
       .catch(console.error);
   }
@@ -48,7 +48,7 @@ function MyMessage({ message, setRefresh }) {
       .delete(`chats/message_edit/${message.id}`)
       .then((res) => {
         // console.log(res.data.message);
-        setRefresh((state) => !state);
+        setMessageListRefresh((state) => !state);
       })
       .catch(console.error);
   }

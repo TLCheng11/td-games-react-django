@@ -4,8 +4,9 @@ import { axiosInstance } from "../../utilities/axios";
 import "./Invites.css";
 import { UserContext } from "../../contexts/UserContext";
 
-function Invites({ friend, refresh, setRefresh, showAlert }) {
-  const { currentUser } = useContext(UserContext);
+function Invites({ friend, showAlert }) {
+  const { currentUser, friendListRefresh, setFriendListRefresh } =
+    useContext(UserContext);
 
   const [invite, setInvite] = useState({});
 
@@ -15,7 +16,7 @@ function Invites({ friend, refresh, setRefresh, showAlert }) {
       .get(`friends/${friend.id}/`)
       .then((res) => setInvite(res.data))
       .catch(console.error);
-  }, [refresh]);
+  }, [friendListRefresh]);
 
   function cancelInvite(e) {
     e.target.style.pointerEvents = "none";
@@ -23,7 +24,7 @@ function Invites({ friend, refresh, setRefresh, showAlert }) {
       .delete(`friends/${invite.id}/`)
       .then((res) => showAlert({ type: "alert", message: res.data.message }))
       .then(() => {
-        setRefresh((state) => !state);
+        setFriendListRefresh((state) => !state);
       })
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })
@@ -36,7 +37,7 @@ function Invites({ friend, refresh, setRefresh, showAlert }) {
       .patch(`friends/${invite.id}/`, { method: "declined" })
       .then((res) => showAlert({ type: "alert", message: res.data.message }))
       .then(() => {
-        setRefresh((state) => !state);
+        setFriendListRefresh((state) => !state);
       })
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })
@@ -49,7 +50,7 @@ function Invites({ friend, refresh, setRefresh, showAlert }) {
       .patch(`friends/${invite.id}/`, { method: "accepted" })
       .then((res) => showAlert({ type: "winner", message: res.data.message }))
       .then(() => {
-        setRefresh((state) => !state);
+        setFriendListRefresh((state) => !state);
       })
       .catch((res) =>
         showAlert({ type: "alert", message: res.response.data.errors })

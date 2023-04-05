@@ -11,7 +11,7 @@ function MessageList({ messageListPackage }) {
   const [formInput, setFormInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [usersStatus, setUsersStatus] = useState({});
-  const [refresh, setRefresh] = useState(false);
+  const [messageListRefresh, setMessageListRefresh] = useState(false);
   const [chatWebSocket, setChatWebSocket] = useState({});
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function MessageList({ messageListPackage }) {
       const messages = res.data.sort((a, b) => a.id - b.id);
       setMessages(messages);
     });
-  }, [refresh]);
+  }, [messageListRefresh]);
 
   // TODO add message websocket
   useEffect(() => {
@@ -40,7 +40,11 @@ function MessageList({ messageListPackage }) {
 
   const showMessages = messages.map((message) => {
     return (
-      <Message key={message.id} message={message} setRefresh={setRefresh} />
+      <Message
+        key={message.id}
+        message={message}
+        setMessageListRefresh={setMessageListRefresh}
+      />
     );
   });
 
